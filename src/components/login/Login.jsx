@@ -1,0 +1,96 @@
+import React, { useState } from "react";
+import { Button, TextField } from "@material-ui/core";
+import { auth } from "../../firebase";
+import { useNavigate } from "react-router-dom";
+import swal from 'sweetalert';
+ 
+
+
+import "./Style.css";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    auth.signInWithEmailAndPassword(email, password).then(
+      (result) => navigate("/dashboard"),
+      (error) =>{
+        swal("Oops!", "Invalid Username/Password", "error");
+        // toast.error(error)
+        // toast.success("Hello");
+      }
+    );
+  };
+
+  return (
+    <div className="main-div">
+     
+      <div className="login-title">
+        <h2>Task Management</h2>
+      </div>
+      <div>
+        <card className="card">
+          <div className="card-title">
+            <h4>Log in to your account</h4>
+            <div className="input-div">
+              <br />
+              <TextField
+                type="email"
+                label="Email"
+                placeholder="Enter Your Email"
+                variant="outlined"
+                fullwidth
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <br />
+              <TextField
+                type="password"
+                label="Password"
+                placeholder="Enter Your Password"
+                variant="outlined"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <br />
+              <div className="login-button">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleLogin}
+                >
+                  Log in
+                </Button>
+              </div>
+              <div className="other-signin">
+                <p>OR</p>
+
+                <Button className="g-button">
+                  <img
+                    height="18px"
+                    width="18px"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu1PJmT_THldF0n5APcmt9p10utgu6KSw4cH2fQ5Xhpw&s"
+                    alt="GoogleIcon"
+                  />
+                  Google{" "}
+                </Button>
+                
+              </div>
+            </div>
+          </div>
+        </card>
+         
+      </div>
+      
+     
+    </div>
+    
+  );
+};
+
+export default Login;
