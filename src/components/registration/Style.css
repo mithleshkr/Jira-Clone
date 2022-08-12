@@ -1,3 +1,71 @@
-.css{
+* {
+    margin: 0;
+    padding: 0;
+}
+.login-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 30vh;
+}
+.card-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    margin: 0px auto 24px;
+    width: 400px;
+    padding: 32px 40px;
+    background: rgb(255, 255, 255);
+    border-radius: 6px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 0px 10px;
+    box-sizing: border-box;
+    color: rgb(94, 108, 132);
+    margin-top: 45px;
     
+}
+.login-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.other-signin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+.input-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+.other-signin-button{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.g-button{
+    box-shadow: rgb(0 0 0 / 20%) 0px 10px 10px;
+}
+.main-div{
+    height: 100vh;
+    background-image:url(https://img-cdn.inc.com/image/upload/w_1920,h_1080,c_fill/images/panoramic/GettyImages-955899588_437277_jfqfvp.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.signup-div{
+    color: blue;
+    cursor: pointer;
 }
