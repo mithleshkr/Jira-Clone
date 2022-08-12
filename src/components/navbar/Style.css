@@ -1,3 +1,9 @@
-.css{
+.sidebar-main-div{
+    position: absolute;
+    height:100vh;
+    width:200px;
+    background-color:#0052CC;
+    display:flex;
     
+    align-items: center;
 }
