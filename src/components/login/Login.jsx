@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField } from "@material-ui/core";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
-import swal from 'sweetalert';
- 
-
-
+import swal from "sweetalert";
 import "./Style.css";
 
 const Login = () => {
@@ -16,17 +13,18 @@ const Login = () => {
   const handleLogin = () => {
     auth.signInWithEmailAndPassword(email, password).then(
       (result) => navigate("/dashboard"),
-      (error) =>{
+      (error) => {
         swal("Oops!", "Invalid Username/Password", "error");
-        // toast.error(error)
-        // toast.success("Hello");
       }
     );
   };
 
+  const googleLogin = () =>{
+    
+  }
+
   return (
     <div className="main-div">
-     
       <div className="login-title">
         <h2>Task Management</h2>
       </div>
@@ -63,6 +61,7 @@ const Login = () => {
                   color="primary"
                   size="small"
                   onClick={handleLogin}
+                  disabled={!email || !password}
                 >
                   Log in
                 </Button>
@@ -70,26 +69,29 @@ const Login = () => {
               <div className="other-signin">
                 <p>OR</p>
 
-                <Button className="g-button">
+                <Button 
+                onClick={googleLogin}
+                
+                className="g-button">
+                  Sign in with {" "}
                   <img
                     height="18px"
                     width="18px"
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu1PJmT_THldF0n5APcmt9p10utgu6KSw4cH2fQ5Xhpw&s"
                     alt="GoogleIcon"
                   />
-                  Google{" "}
+                 {" "} oogle{" "}
                 </Button>
-                
+              </div>
+              <br/>
+              <div className="signup-div">
+                <p onClick={()=>navigate("/registration")}>Sign up for an account</p>
               </div>
             </div>
           </div>
         </card>
-         
       </div>
-      
-     
     </div>
-    
   );
 };
 
