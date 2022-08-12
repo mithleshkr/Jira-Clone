@@ -1,3 +1,9 @@
-.css{
+.header-main-div{
+    position: absolute;
+    height:10vh;
+    width:1366px;
+    background-color:whitesmoke;
+    display:flex;
     
+    align-items: center;
 }
