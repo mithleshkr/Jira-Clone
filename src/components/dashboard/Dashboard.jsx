@@ -1,11 +1,21 @@
-import React from 'react'
+import React from "react";
+import Header from "../header/Header";
+import Navbar from "../navbar/Navbar";
 
 const Dashboard = () => {
   return (
     <div>
-      <h1>This is Dashboard screen</h1>
+      <Header />
+      <div style={{display:"flex"}}>
+        
+        <Navbar />
+        <div >
+          This is dashboard
+        </div>
+      </div>
+     
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

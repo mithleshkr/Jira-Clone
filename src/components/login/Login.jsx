@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleLogin = () => {
     auth.signInWithEmailAndPassword(email, password).then(
-      (result) => navigate("/dashboard"),
+      (result) => navigate("/dashboard")+sessionStorage.setItem("email",email),
       (error) => {
         swal("Oops!", "Invalid Username/Password", "error");
       }

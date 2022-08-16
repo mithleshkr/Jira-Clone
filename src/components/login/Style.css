@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     height: 30vh;
 }
 .card-title{
@@ -26,7 +26,8 @@
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 10px;
     box-sizing: border-box;
     color: rgb(94, 108, 132);
-    margin-top: 45px;
+    
+    
     
 }
 .login-button{
@@ -64,4 +65,8 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+}
+.signup-div{
+    color: blue;
+    cursor: pointer;
 }

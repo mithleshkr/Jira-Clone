@@ -1,9 +1,8 @@
 .header-main-div{
-    position: absolute;
-    height:10vh;
-    width:1366px;
-    background-color:whitesmoke;
-    display:flex;
-    
-    align-items: center;
+    display: flex;
+    flex-basis: 100%;
+    position: relative;
+    height: 70px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    background-color: rgba(30, 30, 30, 0.8);
 }
