@@ -20,7 +20,8 @@ const Signup = () => {
       swal("GREAT!", "Successfully registered", "success")
       
     },(error)=>{
-      swal("Oops!", "Either email already registered or bad email", "error");
+       swal("Oops!", error.message, "error");
+      
       
     })
     db.collection("registration-details").add(

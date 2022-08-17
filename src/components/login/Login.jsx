@@ -14,7 +14,7 @@ const Login = () => {
     auth.signInWithEmailAndPassword(email, password).then(
       (result) => navigate("/dashboard")+sessionStorage.setItem("email",email),
       (error) => {
-        swal("Oops!", "Invalid Username/Password", "error");
+        swal("Oops!", error.message, "error");
       }
     );
   };
@@ -26,7 +26,11 @@ const Login = () => {
   return (
     <div className="main-div">
       <div className="login-title">
-        <h2>Task Management</h2>
+      <img 
+         width="100px"
+         height='100px'
+         src="https://cdn.icon-icons.com/icons2/2699/PNG/512/atlassian_jira_logo_icon_170511.png"
+         alt="" /><h2>iTaskManagement</h2>
       </div>
       <div>
         <card className="card">

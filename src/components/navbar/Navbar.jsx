@@ -24,9 +24,9 @@ function Navbar() {
             onChange={handleChange}
             sx={{ borderRight: 1, borderColor: "divider" }}
           >
-            <Tab label="Dashboard"  onClick={()=>navigate('/dashboard')}/>
-            <Tab label="Backlogs"  onClick={()=>navigate('/backlog')}/>
-            <Tab label="Project" onClick={()=>navigate('/project')} />
+            <Tab label="Dashboard"  />
+            <Tab label="Backlogs"  />
+            <Tab label="Project"  />
             
           </Tabs>
         </div>

@@ -1,3 +1,14 @@
-.css{
+.dashboard-card{
+    margin-top: 10px;
+    margin-right: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    width: 100%;
     
+    
+   
 }
+.collection-create-form_last-form-item {
+    margin-bottom: 0;
+  }
