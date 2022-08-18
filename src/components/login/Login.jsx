@@ -14,7 +14,13 @@ const Login = () => {
     auth.signInWithEmailAndPassword(email, password).then(
       (result) => navigate("/dashboard")+sessionStorage.setItem("email",email),
       (error) => {
-        swal("Oops!", error.message, "error");
+        swal({
+          title: "Oops!",
+          text: error.message,
+          icon: "error",
+          timer: "1500",
+          button: false
+        });
       }
     );
   };

@@ -8,3 +8,45 @@
     background-color: rgba(40, 40, 40, 0.8);
   
 }
+
+ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1rem;
+    
+}
+ul li a{
+    text-decoration: none;
+    border-left: 3px solid transparent;
+   
+    color: #fff;
+    padding: 10px 20px ;
+   
+    margin-top: 0.3rem;
+    
+}
+ul li a{
+    width: 220px;
+}
+ul li a:hover{
+    background-color: #188fff46;
+    color: #fff;
+}
+
+.active{
+    background-color: #188fff46;
+    color: #fff;
+    border-left: 3px solid #1890ff;
+ 
+
+}
+.li-div{
+    display: flex;
+    align-items: center;
+    
+    
+    
+}

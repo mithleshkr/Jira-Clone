@@ -18,7 +18,7 @@ const Header = () => {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  
   return (
     <div>
       <div className='header-main-div'>

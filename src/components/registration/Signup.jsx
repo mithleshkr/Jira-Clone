@@ -17,10 +17,23 @@ const Signup = () => {
       setTimeout(()=>{
         navigate('/')
       },2000)
-      swal("GREAT!", "Successfully registered", "success")
+      swal({
+        title: "GREAT",
+        text: "Successfully registered",
+        icon: "success",
+        timer: "1500",
+        button: false
+      });
       
     },(error)=>{
-       swal("Oops!", error.message, "error");
+       
+      swal({
+        title: "Oops!",
+        text: error.message,
+        icon: "error",
+        timer: "1500",
+        button: false
+      });
       
       
     })
