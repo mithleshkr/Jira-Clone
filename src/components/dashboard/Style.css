@@ -1,14 +1,52 @@
 .dashboard-card{
-    margin-top: 10px;
-    margin-right: 10px;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    width: 100%;
+    /* flex-direction: row; */
+    /* flex-basis: 100%; */
+    width: calc(100% - 250px);
+    
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    
     
     
    
 }
 .collection-create-form_last-form-item {
     margin-bottom: 0;
+  }
+  .todo-card{
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    justify-content: center;
+    height: 83vh;
+    
+    
+    
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    
+    
+  }
+  .button-div{
+    text-align: right;
+  }
+  .todo1{
+   
+    width: 33%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.555);
+  }
+  .todo2{
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.555);
+    width: 33%;
+  }
+  .todo3{
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.555);
+    width: 33%;
+  }
+
+  .todo-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
   }
