@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbar/Navbar";
 import { Add } from "@material-ui/icons";
-import { Button } from "@material-ui/core";
+import { Button,Avatar, TextField,CircularProgress } from "@material-ui/core";
 import "./Style.css";
 import "antd/dist/antd.css";
 import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
 import { db } from "../../firebase";
 import swal from "sweetalert";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
+
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -148,11 +151,19 @@ const Dashboard = () => {
             });
           });
         }
-        console.log(displaydata);
       });
   }
+
+  const [progress, setProgress] = React.useState(0);
   useEffect(() => {
     Fetchdata();
+    const timer = setInterval(() => {
+      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+    }, 800);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   return (
@@ -196,16 +207,47 @@ const Dashboard = () => {
             <Row gutter={15}>
               <Col span={8}>
                 <Card title="TO DO" bordered={false}>
-                  <div style={{ maxHeight: "67vh", overflow: "auto" }}>
+                  {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
+                  <PerfectScrollbar style={{ height: "67vh" }}>
                     {displaydata.map((task) => (
                       <div className="todo-div">
-                        <h3>{task.data.TaskTitle}</h3>
-                        <h5>{task.data.EndDate}</h5>
-                        <h5>{task.data.AssignTo}</h5>
-                        <p>{task.data.TaskDescreption}</p>
+                        <div style={{display:"flex",justifyContent:"space-between"}}>
+                        <p style={{fontWeight:700,fontSize:"16px"}}>{task.data.TaskTitle}</p><Avatar
+                         style={{width:34,height:34}}
+                        >A</Avatar> 
+                        
+                        {/* {task.data.AssignTo} */}
+                        
+                        </div>
+                        
+                        <div >
+                        <TextField
+                        variant="outlined"
+                        disabled
+                        style={{width:"250px"}} value={task.data.TaskDescreption} />
+                        </div>
+                        <br/>
+                        <div style={{marginLeft:"4px",display:"flex",justifyContent:"space-between"}}>
+                        <h5>&nbsp;<img 
+                        
+                        height="18px"
+                        width="18px"
+                        src="https://e7.pngegg.com/pngimages/911/843/png-clipart-computer-icons-scalable-graphics-last-date-angle-text.png"
+                        alt="end date"/>{task.data.EndDate}</h5>
+                        
+                        <div>
+                        <CircularProgress
+                        style={{width:"16px"}}
+                        variant="determinate" value={progress} />
+                        </div>
+                        
+                        
+                        </div>
+                        
                       </div>
                     ))}
-                  </div>
+                  </PerfectScrollbar>
+                  {/* </div> */}
                 </Card>
               </Col>
               <Col span={8}>
