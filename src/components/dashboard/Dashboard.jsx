@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbar/Navbar";
 import { Add } from "@material-ui/icons";
-import { Button,Avatar, TextField,CircularProgress } from "@material-ui/core";
+import { Button, Avatar, TextField, CircularProgress } from "@material-ui/core";
 import "./Style.css";
 import "antd/dist/antd.css";
-import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
+import {
+  Form,
+  Modal,
+  Select,
+  Input,
+  Card,
+  Col,
+  Row,
+  Drawer,
+  Space,
+} from "antd";
 import { db } from "../../firebase";
 import swal from "sweetalert";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
-
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -132,6 +141,8 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
 };
 
 const Dashboard = () => {
+  const [visibleD, setVisibleD] = useState(false);
+  const [size, setSize] = useState();
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
 
@@ -154,17 +165,23 @@ const Dashboard = () => {
       });
   }
 
-  const [progress, setProgress] = React.useState(0);
+  //const [progress, setProgress] = React.useState(0);
   useEffect(() => {
     Fetchdata();
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-    }, 800);
-
-    return () => {
-      clearInterval(timer);
-    };
   }, []);
+
+  // const toProgress = (id) => {
+  //   alert(id);
+  // };
+  const showLargeDrawer = (id) => {
+    
+   
+    setVisibleD(true);
+  };
+
+  const onClose = () => {
+    setVisibleD(false);
+  };
 
   return (
     <div>
@@ -207,46 +224,92 @@ const Dashboard = () => {
             <Row gutter={15}>
               <Col span={8}>
                 <Card title="TO DO" bordered={false}>
+                  <div>
+                    <h4>TO DO</h4>
+                  </div>
                   {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
-                  <PerfectScrollbar style={{ height: "67vh" }}>
-                    {displaydata.map((task) => (
-                      <div className="todo-div">
-                        <div style={{display:"flex",justifyContent:"space-between"}}>
-                        <p style={{fontWeight:700,fontSize:"16px"}}>{task.data.TaskTitle}</p><Avatar
-                         style={{width:34,height:34}}
-                        >A</Avatar> 
-                        
+                  {/* <PerfectScrollbar style={{ height: "67vh" }}> */}
+                  {displaydata.map((task, key) => (
+                    <div
+                      className="todo-div"
+                      key={task.id}
+                      onClick={()=>showLargeDrawer(task.id)}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontWeight: 700,
+                            fontSize: "16px",
+                            marginBottom: 0,
+                          }}
+                        >
+                          {task.data.TaskTitle}
+                        </p>
+                        <Avatar style={{ width: 30, height: 30 }}>
+                          {" "}
+                          {task.data.AssignTo}
+                        </Avatar>
+
                         {/* {task.data.AssignTo} */}
-                        
-                        </div>
-                        
-                        <div >
-                        <TextField
+                      </div>
+
+                      <div>
+                        <p
+                          style={{
+                            fontWeight: 300,
+                            fontSize: "14px",
+                            color: "grey",
+                          }}
+                        >
+                          {task.data.TaskDescreption}
+                        </p>
+                        {/* <TextField
                         variant="outlined"
                         disabled
-                        style={{width:"250px"}} value={task.data.TaskDescreption} />
-                        </div>
-                        <br/>
-                        <div style={{marginLeft:"4px",display:"flex",justifyContent:"space-between"}}>
-                        <h5>&nbsp;<img 
-                        
-                        height="18px"
-                        width="18px"
-                        src="https://e7.pngegg.com/pngimages/911/843/png-clipart-computer-icons-scalable-graphics-last-date-angle-text.png"
-                        alt="end date"/>{task.data.EndDate}</h5>
-                        
-                        <div>
+                        style={{width:"250px"}} value={task.data.TaskDescreption} /> */}
+                      </div>
+
+                      <div
+                        style={{
+                          marginLeft: "4px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: 0,
+                        }}
+                      >
+                        <h5 style={{ fontWeight: 600 }}>{task.data.EndDate}</h5>
+
+                        {/* <div>
                         <CircularProgress
                         style={{width:"16px"}}
                         variant="determinate" value={progress} />
-                        </div>
-                        
-                        
-                        </div>
-                        
+                        </div> */}
                       </div>
-                    ))}
-                  </PerfectScrollbar>
+                    </div>
+                  ))}
+                  <Drawer
+                    title="TO DO TASK"
+                    placement="right"
+                    size={size}
+                    onClose={onClose}
+                    visible={visibleD}
+                    extra={
+                      <Space>
+                        <Button onClick={onClose}>Cancel</Button>
+                        <Button type="primary" onClick={onClose}>
+                          OK
+                        </Button>
+                      </Space>
+                    }
+                  >
+                    <h1>Hello</h1>
+                  </Drawer>
+                  {/* </PerfectScrollbar> */}
                   {/* </div> */}
                 </Card>
               </Col>
