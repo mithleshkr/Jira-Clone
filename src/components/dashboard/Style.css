@@ -55,5 +55,6 @@
     border-radius: 5px;
   }
   .todo-div:hover {
+    cursor: pointer;
    border: 1px solid #1890ff;
   }

@@ -13,8 +13,7 @@ import {
   Card,
   Col,
   Row,
-  Drawer,
-  Space,
+  Drawer
 } from "antd";
 import { db } from "../../firebase";
 import swal from "sweetalert";
@@ -145,6 +144,10 @@ const Dashboard = () => {
   const [size, setSize] = useState();
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [tTitle, setTtitle] = useState("");
+  const [tDesc, setTdesc] = useState("");
+  const [tEndDate, setTendDate] = useState("");
+  const [tAssignTo, setTassignTo] = useState("");
 
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
@@ -174,9 +177,19 @@ const Dashboard = () => {
   //   alert(id);
   // };
   const showLargeDrawer = (id) => {
-    
-   
+    console.log(id);
+    setSize("600px");
     setVisibleD(true);
+
+    let item = displaydata.find((item) => id === item.id);
+    setTtitle(item.data.TaskTitle);
+    setTdesc(item.data.TaskDescreption);
+    setTassignTo(item.data.AssignTo);
+    setTendDate(item.data.EndDate);
+    // console.log("item====>", item);
+
+    // setTaskTitle(item.taskTitle)
+    // console.log("function called ====>",displaydata[id])
   };
 
   const onClose = () => {
@@ -229,11 +242,11 @@ const Dashboard = () => {
                   </div>
                   {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
                   {/* <PerfectScrollbar style={{ height: "67vh" }}> */}
-                  {displaydata.map((task, key) => (
+                  {displaydata.map((task) => (
                     <div
                       className="todo-div"
                       key={task.id}
-                      onClick={()=>showLargeDrawer(task.id)}
+                      onClick={() => showLargeDrawer(task.id)}
                     >
                       <div
                         style={{
@@ -252,7 +265,7 @@ const Dashboard = () => {
                         </p>
                         <Avatar style={{ width: 30, height: 30 }}>
                           {" "}
-                          {task.data.AssignTo}
+                          {task.data.AssignTo[0]}
                         </Avatar>
 
                         {/* {task.data.AssignTo} */}
@@ -293,21 +306,82 @@ const Dashboard = () => {
                     </div>
                   ))}
                   <Drawer
+                
                     title="TO DO TASK"
                     placement="right"
                     size={size}
                     onClose={onClose}
                     visible={visibleD}
-                    extra={
-                      <Space>
-                        <Button onClick={onClose}>Cancel</Button>
-                        <Button type="primary" onClick={onClose}>
-                          OK
-                        </Button>
-                      </Space>
-                    }
+                    // extra={
+                    //   <Space>
+                    //     <Button onClick={onClose}>Cancel</Button>
+                    //     <Button type="primary" onClick={onClose}>
+                    //       OK
+                    //     </Button>
+                    //   </Space>
+                    // }
                   >
-                    <h1>Hello</h1>
+                    <h2
+                    style={{fontWeight: "500px",
+                      fontSize: "16px"}}
+                    >{tTitle}</h2>
+                    <h3
+                      style={{
+                        fontWeight: 300,
+                        color: "grey",
+                      }}
+                    >
+                      {tDesc}
+                    </h3>
+                    <div >
+                    <h4
+                      style={{
+                        display:"flex",
+
+                        fontWeight: 300,
+                        color: "grey",
+                      }}
+                    >{' '}
+                      <Avatar style={{ width: 20, height: 20,marginRight:"5px" }}>
+                          {" "}
+                          {tAssignTo[0]}
+                        </Avatar> {tAssignTo}
+                    </h4>
+                    </div>
+                    <h5
+                      style={{
+                        fontWeight: 600,
+                        color: "grey",
+                        marginBottom:10
+                      }}
+                    >
+                      {tEndDate}
+                    </h5>
+                        
+                    <Form.Item
+                    style={{marginBottom:"10px"}}
+                      name="status"
+                     
+                      rules={[
+                        {
+                          
+                          message: "Select Status",
+                        },
+                      ]}
+                    >
+                      <Select defaultValue="select status" style={{width:"180px"}}>
+                        <Select.Option value="demo1">TO DO</Select.Option>
+                        <Select.Option value="demo2">IN PROGRESS</Select.Option>
+                        <Select.Option value="demo3">DONE</Select.Option>
+                      </Select>
+                    </Form.Item>
+                      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"flex-end"}}>
+                    <Button
+                    style={{ backgroundColor: "#1890ff", color: "white" }}
+                    size="small"
+                    > SAVE</Button>
+                    </div>
+                    {/* <input value={cardData.data.TaskTitle} />   */}
                   </Drawer>
                   {/* </PerfectScrollbar> */}
                   {/* </div> */}
