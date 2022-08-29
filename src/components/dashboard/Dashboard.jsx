@@ -2,29 +2,22 @@ import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
 import Navbar from "../navbar/Navbar";
 import { Add } from "@material-ui/icons";
-import { Button, Avatar, TextField, CircularProgress } from "@material-ui/core";
+import { Button, Avatar } from "@material-ui/core";
 import "./Style.css";
 import "antd/dist/antd.css";
-import {
-  Form,
-  Modal,
-  Select,
-  Input,
-  Card,
-  Col,
-  Row,
-  Drawer
-} from "antd";
+import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
 import { db } from "../../firebase";
 import swal from "sweetalert";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import PerfectScrollbar from "react-perfect-scrollbar";
+
+import "dragula/dist/dragula.css";
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [endDate, setEndDate] = useState("");
   const [assignTo, setAssignTo] = useState("");
+  const [status, setStatus] = useState("");
 
   const title = <h4>Create New Task</h4>;
 
@@ -46,6 +39,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               TaskDescreption: taskDesc,
               EndDate: endDate,
               AssignTo: assignTo,
+              Status: status,
             });
             swal({
               title: "Great",
@@ -54,6 +48,9 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               timer: "2000",
               button: false,
             });
+            setTimeout(() => {
+              window.location.reload(false);
+            }, 2000);
             form.resetFields();
             onCreate(values);
           })
@@ -85,8 +82,6 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}
           />
-
-          {/* <TextField variant="outlined" fullWidth size="small"  placeholder="Enter Task Title"/> */}
         </Form.Item>
         <Form.Item name="task description" label="Task Description">
           <Input
@@ -94,7 +89,6 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             value={taskDesc}
             onChange={(e) => setTaskDesc(e.target.value)}
           />
-          {/* <TextField variant="outlined" fullWidth size="small"  placeholder="Enter Task Description" type="textarea"/> */}
         </Form.Item>
         <Form.Item
           name="end-date"
@@ -111,7 +105,6 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
-          {/* <TextField type="date" variant="outlined" size="small" fullWidth/> */}
         </Form.Item>
         <Form.Item
           name="assign-to"
@@ -128,10 +121,30 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             value={assignTo}
             onChange={(value) => setAssignTo(value)}
           >
-            <Select.Option value="demo1">Demo1</Select.Option>
-            <Select.Option value="demo2">Demo2</Select.Option>
-            <Select.Option value="demo3">Demo3</Select.Option>
-            <Select.Option value="demo4">Demo4</Select.Option>
+            <Select.Option value="Mithlesh">Mithlesh</Select.Option>
+            <Select.Option value="Tushar">Tushar</Select.Option>
+            <Select.Option value="Shivam">Shivam</Select.Option>
+            <Select.Option value="Digambar">Digambar</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="statsu"
+          label="Status"
+          rules={[
+            {
+              required: true,
+              message: "Select status",
+            },
+          ]}
+        >
+          <Select
+            defaultValue="select status"
+            value={status}
+            onChange={(value) => setStatus(value)}
+          >
+            <Select.Option value="To-Do">TO DO</Select.Option>
+            <Select.Option value="In-Progress">IN PROGRESS</Select.Option>
+            <Select.Option value="Done">DONE</Select.Option>
           </Select>
         </Form.Item>
       </Form>
@@ -140,14 +153,14 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
 };
 
 const Dashboard = () => {
-  const [visibleD, setVisibleD] = useState(false);
-  const [size, setSize] = useState();
+
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [tTitle, setTtitle] = useState("");
-  const [tDesc, setTdesc] = useState("");
-  const [tEndDate, setTendDate] = useState("");
-  const [tAssignTo, setTassignTo] = useState("");
+  const [toDo, setToDo] = useState("To Do");
+  const [inProgress, setInProgress] = useState("In Progress");
+  const [done, setDone] = useState("Done");
+
+ 
 
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
@@ -173,28 +186,20 @@ const Dashboard = () => {
     Fetchdata();
   }, []);
 
-  // const toProgress = (id) => {
-  //   alert(id);
-  // };
-  const showLargeDrawer = (id) => {
-    console.log(id);
-    setSize("600px");
-    setVisibleD(true);
+  const filterData = ( data ) =>{
+    return data.data.Status === "To-Do"  
+  }
+  var filterDataToDo = displaydata.filter(filterData)
 
-    let item = displaydata.find((item) => id === item.id);
-    setTtitle(item.data.TaskTitle);
-    setTdesc(item.data.TaskDescreption);
-    setTassignTo(item.data.AssignTo);
-    setTendDate(item.data.EndDate);
-    // console.log("item====>", item);
+  const filterInProgress = (data) =>{
+    return data.data.Status === "In-Progress"
+  }
+  var filterDataInProgress = displaydata.filter(filterInProgress)
 
-    // setTaskTitle(item.taskTitle)
-    // console.log("function called ====>",displaydata[id])
-  };
-
-  const onClose = () => {
-    setVisibleD(false);
-  };
+  const filterDone =(data)=>{
+    return data.data.Status ==="Done"
+  }
+  var filterDataDone = displaydata.filter(filterDone)
 
   return (
     <div>
@@ -237,164 +242,212 @@ const Dashboard = () => {
             <Row gutter={15}>
               <Col span={8}>
                 <Card title="TO DO" bordered={false}>
-                  <div>
-                    <h4>TO DO</h4>
-                  </div>
-                  {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
-                  {/* <PerfectScrollbar style={{ height: "67vh" }}> */}
-                  {displaydata.map((task) => (
-                    <div
-                      className="todo-div"
-                      key={task.id}
-                      onClick={() => showLargeDrawer(task.id)}
-                    >
+                  <div style={{ height: "67vh", overflow: "auto" }}>
+                    {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
+                    {/* <PerfectScrollbar style={{ height: "67vh" }}> */}
+                    {filterDataToDo.map((task) => (
                       <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
+                        className="todo-div"
+                        key={task.id}
+                        // onClick={() => showLargeDrawer(task.id)}
                       >
-                        <p
+                        <div
                           style={{
-                            fontWeight: 700,
-                            fontSize: "16px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p
+                            style={{
+                              fontWeight: 700,
+                              fontSize: "16px",
+                              marginBottom: 0,
+                            }}
+                          >
+                            {task.data.TaskTitle}
+                          </p>
+                          <Avatar style={{ width: 30, height: 30 }}>
+                            {" "}
+                            {task.data.AssignTo[0]}
+                          </Avatar>
+
+                          {/* {task.data.AssignTo} */}
+                        </div>
+
+                        <div>
+                          <p
+                            style={{
+                              fontWeight: 300,
+                              fontSize: "14px",
+                              color: "grey",
+                            }}
+                          >
+                            {task.data.TaskDescreption}
+                          </p>
+                        </div>
+
+                        <div
+                          style={{
+                            marginLeft: "4px",
+                            display: "flex",
+                            justifyContent: "space-between",
                             marginBottom: 0,
                           }}
                         >
-                          {task.data.TaskTitle}
-                        </p>
-                        <Avatar style={{ width: 30, height: 30 }}>
-                          {" "}
-                          {task.data.AssignTo[0]}
-                        </Avatar>
-
-                        {/* {task.data.AssignTo} */}
+                          <h5 style={{ fontWeight: 600 }}>
+                            {task.data.EndDate}
+                          </h5>
+                          <h5>
+                            <Select defaultValue={task.data.Status}>
+                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
+                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
+                                In Progress
+                              </Select.Option>
+                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
+                            </Select>
+                          </h5>
+                        </div>
                       </div>
-
-                      <div>
-                        <p
-                          style={{
-                            fontWeight: 300,
-                            fontSize: "14px",
-                            color: "grey",
-                          }}
-                        >
-                          {task.data.TaskDescreption}
-                        </p>
-                        {/* <TextField
-                        variant="outlined"
-                        disabled
-                        style={{width:"250px"}} value={task.data.TaskDescreption} /> */}
-                      </div>
-
-                      <div
-                        style={{
-                          marginLeft: "4px",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: 0,
-                        }}
-                      >
-                        <h5 style={{ fontWeight: 600 }}>{task.data.EndDate}</h5>
-
-                        {/* <div>
-                        <CircularProgress
-                        style={{width:"16px"}}
-                        variant="determinate" value={progress} />
-                        </div> */}
-                      </div>
-                    </div>
-                  ))}
-                  <Drawer
-                
-                    title="TO DO TASK"
-                    placement="right"
-                    size={size}
-                    onClose={onClose}
-                    visible={visibleD}
-                    // extra={
-                    //   <Space>
-                    //     <Button onClick={onClose}>Cancel</Button>
-                    //     <Button type="primary" onClick={onClose}>
-                    //       OK
-                    //     </Button>
-                    //   </Space>
-                    // }
-                  >
-                    <h2
-                    style={{fontWeight: "500px",
-                      fontSize: "16px"}}
-                    >{tTitle}</h2>
-                    <h3
-                      style={{
-                        fontWeight: 300,
-                        color: "grey",
-                      }}
-                    >
-                      {tDesc}
-                    </h3>
-                    <div >
-                    <h4
-                      style={{
-                        display:"flex",
-
-                        fontWeight: 300,
-                        color: "grey",
-                      }}
-                    >{' '}
-                      <Avatar style={{ width: 20, height: 20,marginRight:"5px" }}>
-                          {" "}
-                          {tAssignTo[0]}
-                        </Avatar> {tAssignTo}
-                    </h4>
-                    </div>
-                    <h5
-                      style={{
-                        fontWeight: 600,
-                        color: "grey",
-                        marginBottom:10
-                      }}
-                    >
-                      {tEndDate}
-                    </h5>
-                        
-                    <Form.Item
-                    style={{marginBottom:"10px"}}
-                      name="status"
-                     
-                      rules={[
-                        {
-                          
-                          message: "Select Status",
-                        },
-                      ]}
-                    >
-                      <Select defaultValue="select status" style={{width:"180px"}}>
-                        <Select.Option value="demo1">TO DO</Select.Option>
-                        <Select.Option value="demo2">IN PROGRESS</Select.Option>
-                        <Select.Option value="demo3">DONE</Select.Option>
-                      </Select>
-                    </Form.Item>
-                      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"flex-end"}}>
-                    <Button
-                    style={{ backgroundColor: "#1890ff", color: "white" }}
-                    size="small"
-                    > SAVE</Button>
-                    </div>
-                    {/* <input value={cardData.data.TaskTitle} />   */}
-                  </Drawer>
-                  {/* </PerfectScrollbar> */}
-                  {/* </div> */}
+                    ))}{" "}
+                  </div>
                 </Card>
               </Col>
               <Col span={8}>
                 <Card title="IN PROGRESS" bordered={false}>
-                  going on task
+            
+                          {/* {displaydata.filter((status)=>(status.value == 'To-Do',console.log("this is tototo",status)))} */}
+                          {filterDataInProgress.map((task) => (
+                      <div
+                        className="todo-div"
+                        key={task.id}
+                        // onClick={() => showLargeDrawer(task.id)}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p
+                            style={{
+                              fontWeight: 700,
+                              fontSize: "16px",
+                              marginBottom: 0,
+                            }}
+                          >
+                            {task.data.TaskTitle}
+                          </p>
+                          <Avatar style={{ width: 30, height: 30 }}>
+                            {" "}
+                            {task.data.AssignTo[0]}
+                          </Avatar>
+
+                          {/* {task.data.AssignTo} */}
+                        </div>
+
+                        <div>
+                          <p
+                            style={{
+                              fontWeight: 300,
+                              fontSize: "14px",
+                              color: "grey",
+                            }}
+                          >
+                            {task.data.TaskDescreption}
+                          </p>
+                        </div>
+
+                        <div
+                          style={{
+                            marginLeft: "4px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 0,
+                          }}
+                        >
+                          <h5 style={{ fontWeight: 600 }}>
+                            {task.data.EndDate}
+                          </h5>
+                          <h5>
+                            <Select defaultValue={task.data.Status}>
+                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
+                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
+                                In Progress
+                              </Select.Option>
+                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
+                            </Select>
+                          </h5>
+                        </div>
+                      </div>
+                    ))}
                 </Card>
               </Col>
               <Col span={8}>
                 <Card title="DONE" bordered={false}>
-                  completed task
+                {filterDataDone.map((task) => (
+                      <div
+                        className="todo-div"
+                        key={task.id}
+                        // onClick={() => showLargeDrawer(task.id)}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p
+                            style={{
+                              fontWeight: 700,
+                              fontSize: "16px",
+                              marginBottom: 0,
+                            }}
+                          >
+                            {task.data.TaskTitle}
+                          </p>
+                          <Avatar style={{ width: 30, height: 30 }}>
+                            {" "}
+                            {task.data.AssignTo[0]}
+                          </Avatar>
+
+                          {/* {task.data.AssignTo} */}
+                        </div>
+
+                        <div>
+                          <p
+                            style={{
+                              fontWeight: 300,
+                              fontSize: "14px",
+                              color: "grey",
+                            }}
+                          >
+                            {task.data.TaskDescreption}
+                          </p>
+                        </div>
+
+                        <div
+                          style={{
+                            marginLeft: "4px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 0,
+                          }}
+                        >
+                          <h5 style={{ fontWeight: 600 }}>
+                            {task.data.EndDate}
+                          </h5>
+                          <h5>
+                            <Select defaultValue={task.data.Status}>
+                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
+                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
+                                In Progress
+                              </Select.Option>
+                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
+                            </Select>
+                          </h5>
+                        </div>
+                      </div>
+                    ))}
                 </Card>
               </Col>
             </Row>
