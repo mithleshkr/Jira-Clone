@@ -137,7 +137,19 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             },
           ]}
         >
-          <Select
+          <div>
+            <select
+              style={{ width: "470px", height: "30px" }}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option>select status</option>
+              <option value="To-Do">TO DO</option>
+              <option value="In-Progress">IN PROGRESS</option>
+              <option value="Done">DONE</option>
+            </select>
+          </div>
+          {/* <input type="dropdown" value="11" /> */}
+          {/* <Select
             defaultValue="select status"
             value={status}
             onChange={(value) => setStatus(value)}
@@ -145,7 +157,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             <Select.Option value="To-Do">TO DO</Select.Option>
             <Select.Option value="In-Progress">IN PROGRESS</Select.Option>
             <Select.Option value="Done">DONE</Select.Option>
-          </Select>
+          </Select> */}
         </Form.Item>
       </Form>
     </Modal>
@@ -153,14 +165,12 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
 };
 
 const Dashboard = () => {
-
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
   const [toDo, setToDo] = useState("To Do");
   const [inProgress, setInProgress] = useState("In Progress");
   const [done, setDone] = useState("Done");
-
- 
+  const [newStatus, setNewStatus] = useState("");
 
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
@@ -184,22 +194,57 @@ const Dashboard = () => {
   //const [progress, setProgress] = React.useState(0);
   useEffect(() => {
     Fetchdata();
+    updateData();
   }, []);
+  
+  // function editColorDetails(_id) {
+  //   //edit popup form open
+  //   setEditColor(true);
 
-  const filterData = ( data ) =>{
-    return data.data.Status === "To-Do"  
-  }
-  var filterDataToDo = displaydata.filter(filterData)
+  //   setUpdateColorid(_id);
+  //   let color = getcolordetails.find((color) => _id === color._id);
+  //   setTitle(color.title);
+  //   setColourCode(color.colourCode);
+  //   setDesc(color.desc);
+  // }
 
-  const filterInProgress = (data) =>{
-    return data.data.Status === "In-Progress"
-  }
-  var filterDataInProgress = displaydata.filter(filterInProgress)
+  
 
-  const filterDone =(data)=>{
-    return data.data.Status ==="Done"
-  }
-  var filterDataDone = displaydata.filter(filterDone)
+  const updateData = (id,e) => {
+    console.log(e)
+    
+   
+  
+   
+      try{
+       db.collection("task-details").doc(id).update({
+        Status:e
+       }
+        
+       ).then(setTimeout(()=>{
+        window.location.reload(false);
+       },2000))}catch(error){
+        console.log(error)
+       }
+    // db.collection("task-details").doc(id).update({
+    //   Status:st
+    // })
+  };
+
+  const filterData = (data) => {
+    return data.data.Status === "To-Do";
+  };
+  var filterDataToDo = displaydata.filter(filterData);
+
+  const filterInProgress = (data) => {
+    return data.data.Status === "In-Progress";
+  };
+  var filterDataInProgress = displaydata.filter(filterInProgress);
+
+  const filterDone = (data) => {
+    return data.data.Status === "Done";
+  };
+  var filterDataDone = displaydata.filter(filterDone);
 
   return (
     <div>
@@ -298,13 +343,12 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                            <Select defaultValue={task.data.Status}>
-                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
-                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
-                                In Progress
-                              </Select.Option>
-                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
-                            </Select>
+                            <select onChange={(e)=> updateData(task.id,e.target.value )}>
+                              
+                              <option value="To-Do">{task.data.Status}</option>
+                              <option value="In-Progress">In-Progress</option>
+                              <option value="Done">Done</option>
+                            </select>
                           </h5>
                         </div>
                       </div>
@@ -314,9 +358,9 @@ const Dashboard = () => {
               </Col>
               <Col span={8}>
                 <Card title="IN PROGRESS" bordered={false}>
-            
-                          {/* {displaydata.filter((status)=>(status.value == 'To-Do',console.log("this is tototo",status)))} */}
-                          {filterDataInProgress.map((task) => (
+                  <div style={{ height: "67vh", overflow: "auto" }}>
+                    {/* {displaydata.filter((status)=>(status.value == 'To-Do',console.log("this is tototo",status)))} */}
+                    {filterDataInProgress.map((task) => (
                       <div
                         className="todo-div"
                         key={task.id}
@@ -369,22 +413,23 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                            <Select defaultValue={task.data.Status}>
-                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
-                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
-                                In Progress
-                              </Select.Option>
-                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
-                            </Select>
+                          <select onChange={(e)=> updateData(task.id,e.target.value )}>
+                          <option value="In-Progress">{task.data.Status}</option>
+                              <option value="To-Do">To Do</option>
+                              
+                              <option value="Done">Done</option>
+                            </select>
                           </h5>
                         </div>
                       </div>
                     ))}
+                  </div>
                 </Card>
               </Col>
               <Col span={8}>
                 <Card title="DONE" bordered={false}>
-                {filterDataDone.map((task) => (
+                  <div style={{ height: "67vh", overflow: "auto" }}>
+                    {filterDataDone.map((task) => (
                       <div
                         className="todo-div"
                         key={task.id}
@@ -437,17 +482,17 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                            <Select defaultValue={task.data.Status}>
-                              <Select.Option value={toDo} onChange={(e)=>setToDo(e.target.value)}>To DO</Select.Option>
-                              <Select.Option value={inProgress} onChange={(e)=>setInProgress(e.target.value)}>
-                                In Progress
-                              </Select.Option>
-                              <Select.Option value={done} onChange={(e)=>setDone(e.target.value)}>Done</Select.Option>
-                            </Select>
+                          <select onChange={(e)=> updateData(task.id,e.target.value )}>
+                          <option value="Done">{task.data.Status}</option>
+                              <option value="To-Do"> To Do</option>
+                              <option value="In-Progress"> In Progress</option>
+                              
+                            </select>
                           </h5>
                         </div>
                       </div>
                     ))}
+                  </div>
                 </Card>
               </Col>
             </Row>
