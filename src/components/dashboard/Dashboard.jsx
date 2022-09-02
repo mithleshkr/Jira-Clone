@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react";
+
+//Header Component
 import Header from "../header/Header";
+
+//Sidebar Component
 import Navbar from "../navbar/Navbar";
+
+//material icons
 import { Add } from "@material-ui/icons";
+
+//material core
 import { Button, Avatar } from "@material-ui/core";
+
+//style page
 import "./Style.css";
 import "antd/dist/antd.css";
+
+//ant design
 import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
+
+//firebase db
 import { db } from "../../firebase";
+
+//sweetalert
 import swal from "sweetalert";
-import "react-perfect-scrollbar/dist/css/styles.css";
 
-import "dragula/dist/dragula.css";
-
+//*Form to add task
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
+
+  var today = new Date();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -30,6 +47,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
       okText="Add"
       cancelText="Cancel"
       onCancel={onCancel}
+      //*to send form data in firestore
       onOk={() => {
         form
           .validateFields()
@@ -40,6 +58,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               EndDate: endDate,
               AssignTo: assignTo,
               Status: status,
+              Time:time
             });
             swal({
               title: "Great",
@@ -167,84 +186,78 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
 const Dashboard = () => {
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [toDo, setToDo] = useState("To Do");
-  const [inProgress, setInProgress] = useState("In Progress");
-  const [done, setDone] = useState("Done");
-  const [newStatus, setNewStatus] = useState("");
 
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
   };
 
+  //*function to fetch data from collections
   function Fetchdata() {
-    db.collection("task-details")
-      .get()
-      .then((snapshot) => {
-        if (snapshot.docs.length) {
-          snapshot.docs.forEach((doc) => {
-            setDisplayData((prev) => {
-              return [...prev, { data: doc.data(), id: doc.id }];
+    try {
+      db.collection("task-details")
+        .get()
+        .then((snapshot) => {
+          if (snapshot.docs.length) {
+            snapshot.docs.forEach((doc) => {
+              setDisplayData((prev) => {
+                return [...prev, { data: doc.data(), id: doc.id }];
+              });
             });
-          });
-        }
-      });
+          }
+        });
+    } catch (error) {
+      console.log("fetch error", error);
+    }
   }
 
-  //const [progress, setProgress] = React.useState(0);
+  //useEffect
   useEffect(() => {
     Fetchdata();
     updateData();
   }, []);
-  
-  // function editColorDetails(_id) {
-  //   //edit popup form open
-  //   setEditColor(true);
 
-  //   setUpdateColorid(_id);
   //   let color = getcolordetails.find((color) => _id === color._id);
-  //   setTitle(color.title);
-  //   setColourCode(color.colourCode);
-  //   setDesc(color.desc);
-  // }
 
-  
-
-  const updateData = (id,e) => {
-    console.log(e)
-    
-   
-  
-   
-      try{
-       db.collection("task-details").doc(id).update({
-        Status:e
-       }
-        
-       ).then(setTimeout(()=>{
-        window.location.reload(false);
-       },2000))}catch(error){
-        console.log(error)
-       }
-    // db.collection("task-details").doc(id).update({
-    //   Status:st
-    // })
+  //*function to update collection data by id
+  const updateData = (id, e) => {
+    console.log(e);
+    try {
+      db.collection("task-details")
+        .doc(id)
+        .update({
+          Status: e,
+        })
+        .then(
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 1000)
+        );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  //filter of TODO
   const filterData = (data) => {
     return data.data.Status === "To-Do";
   };
   var filterDataToDo = displaydata.filter(filterData);
 
+  //filter of IN-PROGRESS
   const filterInProgress = (data) => {
     return data.data.Status === "In-Progress";
   };
   var filterDataInProgress = displaydata.filter(filterInProgress);
 
+  //filter of DONE
   const filterDone = (data) => {
     return data.data.Status === "Done";
   };
   var filterDataDone = displaydata.filter(filterDone);
+
+  var today = new Date();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
   return (
     <div>
@@ -286,16 +299,11 @@ const Dashboard = () => {
           <div>
             <Row gutter={15}>
               <Col span={8}>
+                {/* fetching data of TO DO Status */}
                 <Card title="TO DO" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
-                    {/* <div style={{ maxHeight: "67vh", overflow: "auto" }}> */}
-                    {/* <PerfectScrollbar style={{ height: "67vh" }}> */}
-                    {filterDataToDo.map((task) => (
-                      <div
-                        className="todo-div"
-                        key={task.id}
-                        // onClick={() => showLargeDrawer(task.id)}
-                      >
+                    {filterDataToDo.map((task, id) => (
+                      <div className="todo-div" key={id}>
                         <div
                           style={{
                             display: "flex",
@@ -311,12 +319,10 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30 }}>
+                          <Avatar style={{ width: 30, height: 30, background:"#1890ff" }}>
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
-
-                          {/* {task.data.AssignTo} */}
                         </div>
 
                         <div>
@@ -343,11 +349,15 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                            <select onChange={(e)=> updateData(task.id,e.target.value )}>
-                              
-                              <option value="To-Do">{task.data.Status}</option>
+                            <select
+                            style={{border:"1px solid #1890ff", cursor: "pointer"}}
+                              onChange={(e) =>
+                                updateData(task.id, e.target.value)
+                              }
+                            >
+                              <option  value="To-Do">{task.data.Status}</option>
                               <option value="In-Progress">In-Progress</option>
-                              <option value="Done">Done</option>
+                              
                             </select>
                           </h5>
                         </div>
@@ -357,15 +367,11 @@ const Dashboard = () => {
                 </Card>
               </Col>
               <Col span={8}>
+                {/* fetching data of IN PROGRESS Status */}
                 <Card title="IN PROGRESS" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
-                    {/* {displaydata.filter((status)=>(status.value == 'To-Do',console.log("this is tototo",status)))} */}
                     {filterDataInProgress.map((task) => (
-                      <div
-                        className="todo-div"
-                        key={task.id}
-                        // onClick={() => showLargeDrawer(task.id)}
-                      >
+                      <div className="todo-div1" key={task.id}>
                         <div
                           style={{
                             display: "flex",
@@ -381,12 +387,10 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30 }}>
+                          <Avatar style={{ width: 30, height: 30, background:"#ff9318" }}>
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
-
-                          {/* {task.data.AssignTo} */}
                         </div>
 
                         <div>
@@ -413,9 +417,15 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                          <select onChange={(e)=> updateData(task.id,e.target.value )}>
-                          <option value="In-Progress">{task.data.Status}</option>
-                              <option value="To-Do">To Do</option>
+                            <select
+                             style={{border:"1px solid #ff9318", cursor: "pointer"}}
+                              onChange={(e) =>
+                                updateData(task.id, e.target.value)
+                              }
+                            >
+                              <option value="In-Progress">
+                                {task.data.Status}
+                              </option>
                               
                               <option value="Done">Done</option>
                             </select>
@@ -427,14 +437,11 @@ const Dashboard = () => {
                 </Card>
               </Col>
               <Col span={8}>
+                {/* fetching data of DONE Status */}
                 <Card title="DONE" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
                     {filterDataDone.map((task) => (
-                      <div
-                        className="todo-div"
-                        key={task.id}
-                        // onClick={() => showLargeDrawer(task.id)}
-                      >
+                      <div className="todo-div2" key={task.id}>
                         <div
                           style={{
                             display: "flex",
@@ -450,12 +457,10 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30 }}>
+                          <Avatar style={{ width: 30, height: 30 , background:"#18ff65"}}>
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
-
-                          {/* {task.data.AssignTo} */}
                         </div>
 
                         <div>
@@ -482,10 +487,14 @@ const Dashboard = () => {
                             {task.data.EndDate}
                           </h5>
                           <h5>
-                          <select onChange={(e)=> updateData(task.id,e.target.value )}>
-                          <option value="Done">{task.data.Status}</option>
-                              <option value="To-Do"> To Do</option>
-                              <option value="In-Progress"> In Progress</option>
+                            <select
+                             style={{border:"1px solid #18ff65", cursor: "pointer"}}
+                              onChange={(e) =>
+                                updateData(task.id, e.target.value)
+                              }
+                            >
+                              <option value="Done">{task.data.Status}</option>
+                              <option value="To-Do"> Re-open</option>
                               
                             </select>
                           </h5>

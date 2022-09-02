@@ -1,22 +1,29 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
-.login-title{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-    height: 30vh;
+.login-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  height: 30vh;
 }
-.card-title{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
-.card{
-    display: flex;
+.card {
+  position: absolute;
+  top: 40%;
+  left: 48%;
+  transform: translate(-40%, -40%);
+  height: 50vh;
+  
+
+  /* display: flex;
     flex-direction: column;
     margin: 0px auto 24px;
     width: 400px;
@@ -25,48 +32,62 @@
     border-radius: 6px;
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 10px;
     box-sizing: border-box;
-    color: rgb(94, 108, 132);
-    
-    
-    
+    color: rgb(94, 108, 132); */
 }
-.login-button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.other-signin{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    
+.other-signin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
-.input-div{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
+.input-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.other-signin-button{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.other-signin-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.g-button{
-    box-shadow: rgb(0 0 0 / 20%) 0px 10px 10px;
+.g-button {
+  box-shadow: rgb(0 0 0 / 20%) 0px 10px 10px;
 }
-.main-div{
-    height: 100vh;
-    background-image:url(https://img-cdn.inc.com/image/upload/w_1920,h_1080,c_fill/images/panoramic/GettyImages-955899588_437277_jfqfvp.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+.main-div {
+  height: 100vh;
+   background-image:url(https://img-cdn.inc.com/image/upload/w_1920,h_1080,c_fill/images/panoramic/GettyImages-955899588_437277_jfqfvp.jpg); 
+   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center; 
+  
+ 
+  
 }
-.signup-div{
-    color: blue;
-    cursor: pointer;
+.signup-div {
+  color: blue;
+  cursor: pointer;
+}
+.login-form {
+    padding: 20px;
+    width: 300px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-40%, -40%);
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+.login-form-button {
+  width: 100%;
 }
