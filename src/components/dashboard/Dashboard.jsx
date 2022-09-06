@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 
 //Header Component
 import Header from "../header/Header";
@@ -6,11 +6,27 @@ import Header from "../header/Header";
 //Sidebar Component
 import Navbar from "../navbar/Navbar";
 
+//drawer
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
+
+//loadsh
+import _ from "lodash";
+
+//loader
+import Loader from "../../loader/Loader";
+
 //material icons
 import { Add } from "@material-ui/icons";
 
 //material core
-import { Button, Avatar } from "@material-ui/core";
+import {
+  Button,
+  Avatar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@material-ui/core";
 
 //style page
 import "./Style.css";
@@ -22,14 +38,25 @@ import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
 //firebase db
 import { db } from "../../firebase";
 
+
+
 //sweetalert
 import swal from "sweetalert";
 
+var his = ""
+var currentTimestamp = Date.now();
+console.log(currentTimestamp); // get current timestamp
+var date = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+}).format(currentTimestamp);
+
 //*Form to add task
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
-
-  var today = new Date();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -58,7 +85,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               EndDate: endDate,
               AssignTo: assignTo,
               Status: status,
-              Time:time
+              Time: date,
             });
             swal({
               title: "Great",
@@ -67,9 +94,10 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               timer: "2000",
               button: false,
             });
+
             setTimeout(() => {
               window.location.reload(false);
-            }, 2000);
+            }, 4000);
             form.resetFields();
             onCreate(values);
           })
@@ -187,6 +215,8 @@ const Dashboard = () => {
   const [displaydata, setDisplayData] = useState([]);
   const [visible, setVisible] = useState(false);
 
+  const [tTitle, setTtitle] = useState("");
+
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
@@ -215,9 +245,12 @@ const Dashboard = () => {
   useEffect(() => {
     Fetchdata();
     updateData();
+    
   }, []);
 
   //   let color = getcolordetails.find((color) => _id === color._id);
+  
+
 
   //*function to update collection data by id
   const updateData = (id, e) => {
@@ -227,12 +260,18 @@ const Dashboard = () => {
         .doc(id)
         .update({
           Status: e,
+          Time:date
         })
         .then(
+          db.collection("task-activity").add({
+            Status: e,
+            ID: id,
+            Time: date,
+          }),
           setTimeout(() => {
             window.location.reload(false);
           }, 1000)
-        );
+        ).finally()
     } catch (error) {
       console.log(error);
     }
@@ -256,8 +295,47 @@ const Dashboard = () => {
   };
   var filterDataDone = displaydata.filter(filterDone);
 
-  var today = new Date();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  // var today = new Date();
+  // var time =
+  // `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
+
+  // function sorting(arr) {
+  //   for (let i = 0; i < arr.length; i++) {
+  //     for (let j = i + 1; j < arr.length; j++) {
+  //       if (arr[i] > arr[j]) {
+  //         var temp = arr[i];
+  //         arr[i] = arr[j];
+  //         arr[j] = temp;
+  //       }
+  //     }
+  //   }
+  //   return arr;
+  // }
+  // console.log("sorting", sorting([2, 1, 4, 2, 6, 9, 4]));
+
+  // const [open, setOpen] = useState(false);
+
+  // const showDrawer = (id) => {
+  //   setOpen(true);
+  //   var ID = id;
+  // };
+
+  // const onClose = () => {
+  //   setOpen(false);
+  // };
+
+  const [isOpen, setIsOpen] = React.useState(false);
+  const toggleDrawer = (id) => {
+    setIsOpen((prevState) => !prevState);
+    let activity = displaydata.find((activity)=> id === activity.id);
+     his = activity.data.TaskTitle
+    console.log("history",activity.data.TaskTitle)
+    setTtitle(activity.tTitle);
+    
+  
+    
+  };
+  
 
   return (
     <div>
@@ -301,8 +379,13 @@ const Dashboard = () => {
               <Col span={8}>
                 {/* fetching data of TO DO Status */}
                 <Card title="TO DO" bordered={false}>
+                  
                   <div style={{ height: "67vh", overflow: "auto" }}>
-                    {filterDataToDo.map((task, id) => (
+                    {filterDataToDo
+                    .sort((a,b)=>{                     
+                      return new Date(b.data.Time) - new Date(a.data.Time)
+                    })
+                    .map((task, id) => (
                       <div className="todo-div" key={id}>
                         <div
                           style={{
@@ -319,7 +402,24 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30, background:"#1890ff" }}>
+                          <p
+                            style={{
+                              fontWeight: 500,
+                              cursor: "pointer",
+                            }}
+                            onClick={()=>toggleDrawer(task.id)}
+                            // onClick={()=>showDrawer(task.id)}
+                          >
+                            ...
+                          </p>
+
+                          <Avatar
+                            style={{
+                              width: 30,
+                              height: 30,
+                              background: "#1890ff",
+                            }}
+                          >
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
@@ -350,27 +450,37 @@ const Dashboard = () => {
                           </h5>
                           <h5>
                             <select
-                            style={{border:"1px solid #1890ff", cursor: "pointer"}}
+                              style={{
+                                border: "1px solid #1890ff",
+                                cursor: "pointer",
+                              }}
                               onChange={(e) =>
                                 updateData(task.id, e.target.value)
                               }
                             >
-                              <option  value="To-Do">{task.data.Status}</option>
+                              <option value="To-Do">{task.data.Status}</option>
                               <option value="In-Progress">In-Progress</option>
-                              
                             </select>
                           </h5>
                         </div>
                       </div>
-                    ))}{" "}
+                    ))}
                   </div>
                 </Card>
+                {/* <Drawer placement="right" open={open}>
+                              <h1>hhh</h1>
+                              </Drawer> */}
               </Col>
+
               <Col span={8}>
                 {/* fetching data of IN PROGRESS Status */}
                 <Card title="IN PROGRESS" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
-                    {filterDataInProgress.map((task) => (
+                    {filterDataInProgress
+                    .sort((a,b)=>{                     
+                      return new Date(b.data.Time) - new Date(a.data.Time)
+                    })
+                    .map((task) => (
                       <div className="todo-div1" key={task.id}>
                         <div
                           style={{
@@ -387,7 +497,13 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30, background:"#ff9318" }}>
+                          <Avatar
+                            style={{
+                              width: 30,
+                              height: 30,
+                              background: "#ff9318",
+                            }}
+                          >
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
@@ -418,7 +534,10 @@ const Dashboard = () => {
                           </h5>
                           <h5>
                             <select
-                             style={{border:"1px solid #ff9318", cursor: "pointer"}}
+                              style={{
+                                border: "1px solid #ff9318",
+                                cursor: "pointer",
+                              }}
                               onChange={(e) =>
                                 updateData(task.id, e.target.value)
                               }
@@ -426,7 +545,7 @@ const Dashboard = () => {
                               <option value="In-Progress">
                                 {task.data.Status}
                               </option>
-                              
+
                               <option value="Done">Done</option>
                             </select>
                           </h5>
@@ -440,7 +559,11 @@ const Dashboard = () => {
                 {/* fetching data of DONE Status */}
                 <Card title="DONE" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
-                    {filterDataDone.map((task) => (
+                    {filterDataDone
+                    .sort((a,b)=>{                     
+                      return new Date(b.data.Time) - new Date(a.data.Time)
+                    })
+                    .map((task) => (
                       <div className="todo-div2" key={task.id}>
                         <div
                           style={{
@@ -457,7 +580,13 @@ const Dashboard = () => {
                           >
                             {task.data.TaskTitle}
                           </p>
-                          <Avatar style={{ width: 30, height: 30 , background:"#18ff65"}}>
+                          <Avatar
+                            style={{
+                              width: 30,
+                              height: 30,
+                              background: "#18ff65",
+                            }}
+                          >
                             {" "}
                             {task.data.AssignTo[0]}
                           </Avatar>
@@ -488,14 +617,16 @@ const Dashboard = () => {
                           </h5>
                           <h5>
                             <select
-                             style={{border:"1px solid #18ff65", cursor: "pointer"}}
+                              style={{
+                                border: "1px solid #18ff65",
+                                cursor: "pointer",
+                              }}
                               onChange={(e) =>
                                 updateData(task.id, e.target.value)
                               }
                             >
                               <option value="Done">{task.data.Status}</option>
                               <option value="To-Do"> Re-open</option>
-                              
                             </select>
                           </h5>
                         </div>
@@ -506,7 +637,22 @@ const Dashboard = () => {
               </Col>
             </Row>
           </div>
+          <Drawer
+            open={isOpen}
+            onClose={toggleDrawer}
+            direction="right"
+            style={{ width: "460px" }}
+          >
+            <div >
+              <h2 > Activities</h2>
+              <h4 >{his}</h4>
+            </div>
+          </Drawer>
 
+          {/* <Dialog open={open} onClose={onClose}>
+            <DialogContent>Test</DialogContent>
+
+          </Dialog> */}
           {/* </card> */}
         </div>
       </div>

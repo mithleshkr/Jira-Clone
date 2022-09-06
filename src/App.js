@@ -7,6 +7,7 @@ import Login from './components/login/Login'
 import Navbar from './components/navbar/Navbar'
 import Project from './components/project/Project'
 import Signup from './components/registration/Signup'
+import Loader from './loader/Loader'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path='/nav'  element={<Navbar />} />
           <Route path='/backlog'  element={<Backlogs />} />
           <Route path='/project'  element={<Project />} />
+          <Route path ='/loader' element={<Loader />} />
         </Routes>
       </HashRouter>
     </div>
