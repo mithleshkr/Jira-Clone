@@ -75,12 +75,13 @@
   cursor: pointer;
 }
 .login-form {
-    padding: 20px;
-    width: 300px;
-  position: absolute;
+  display: block;
+    
+  /* width: 300px;
+  position: fixed;
   top: 40%;
   left: 50%;
-  transform: translate(-40%, -40%);
+  transform: translate(-40%, -40%); */
 }
 .login-form-forgot {
   float: right;

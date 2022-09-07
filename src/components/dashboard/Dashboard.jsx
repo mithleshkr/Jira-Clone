@@ -164,6 +164,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             <Select.Option value="Tushar">Tushar</Select.Option>
             <Select.Option value="Shivam">Shivam</Select.Option>
             <Select.Option value="Digambar">Digambar</Select.Option>
+            <Select.Option value="Anurag">Anurag</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item
@@ -259,6 +260,7 @@ const Dashboard = () => {
         .doc(id)
         .update({
           Status: e,
+          UpdatedTime: date,
         })
         .then(
           db.collection("task-activity").add({
@@ -293,35 +295,6 @@ const Dashboard = () => {
     return data.data.Status === "Done";
   };
   var filterDataDone = displaydata.filter(filterDone);
-
-  // var today = new Date();
-  // var time =
-  // `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
-
-  // function sorting(arr) {
-  //   for (let i = 0; i < arr.length; i++) {
-  //     for (let j = i + 1; j < arr.length; j++) {
-  //       if (arr[i] > arr[j]) {
-  //         var temp = arr[i];
-  //         arr[i] = arr[j];
-  //         arr[j] = temp;
-  //       }
-  //     }
-  //   }
-  //   return arr;
-  // }
-  // console.log("sorting", sorting([2, 1, 4, 2, 6, 9, 4]));
-
-  // const [open, setOpen] = useState(false);
-
-  // const showDrawer = (id) => {
-  //   setOpen(true);
-  //   var ID = id;
-  // };
-
-  // const onClose = () => {
-  //   setOpen(false);
-  // };
 
   const [isOpen, setIsOpen] = React.useState(false);
   const toggleDrawer = (id) => {
@@ -369,10 +342,8 @@ const Dashboard = () => {
           />
 
           <div>
-           
             <Row gutter={15}>
               <Col span={8}>
-              
                 {/* fetching data of TO DO Status */}
                 <Card title="TO DO" bordered={false}>
                   <div style={{ height: "67vh", overflow: "auto" }}>
@@ -381,7 +352,6 @@ const Dashboard = () => {
                         return new Date(b.data.Time) - new Date(a.data.Time);
                       })
                       .map((task, id) => (
-                        
                         <div className="todo-div" key={task.id}>
                           <div
                             style={{
@@ -663,11 +633,18 @@ const Dashboard = () => {
           >
             <div className="drawer">
               <h4> Activitie Details</h4>
-              <hr/>
-              <h2> {his.TaskTitle}</h2>
-              <h4 style={{ fontWeight: 600,color:" #FFD700" }}>
+              <hr />
+              <div className="drawer-title">
+                <h2> {his.TaskTitle}</h2>
+                <h4 style={{ color: "#1890ff" }}>{his.AssignTo}</h4>
+              </div>
+
+              <h4 style={{ fontWeight: 600, color: " #FFD700" }}>
                 {" "}
-                Created On:<p style={{ fontWeight: 200,color:" black" }}>{his.Time}</p>{" "}
+                Created On:
+                <p style={{ fontWeight: 200, color: " black" }}>
+                  {his.Time}
+                </p>{" "}
               </h4>
               {/*{displayHistory
               .sort((a,b)=>{
@@ -677,16 +654,22 @@ const Dashboard = () => {
               .map((act)=>( ))}*/}
 
               <div>
-                <h4 style={{ fontWeight: 600,color:"#1890ff" }}>
-                  To Do: <p style={{ fontWeight: 200,color:"black" }}>{his.Time}</p>
+                <h4 style={{ fontWeight: 600, color: "#1890ff" }}>
+                  Last Updated On:{" "}
+                  <p style={{ fontWeight: 200, color: "black" }}>
+                    {his.UpdatedTime}
+                  </p>
                 </h4>
 
-                <h4 style={{ fontWeight: 600,color:"#ff9318" }}>
-                  In Progress: <p style={{ fontWeight: 200,color:"black" }}>{his.Time}</p>
+                <h4 style={{ fontWeight: 600, color: "#ff9318" }}>
+                  Status:{" "}
+                  <p style={{ fontWeight: 200, color: "black" }}>
+                    {his.Status}
+                  </p>
                 </h4>
-                <h4 style={{ fontWeight: 600,color:"#18ff65" }}>
+                {/* <h4 style={{ fontWeight: 600,color:"#18ff65" }}>
                   Done: <p style={{ fontWeight: 200,color:"black" }}>{his.Time}</p>
-                </h4>
+                </h4> */}
               </div>
             </div>
           </Drawer>
