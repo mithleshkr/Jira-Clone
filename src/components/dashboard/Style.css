@@ -90,3 +90,9 @@
     
    border: 1px solid #18ff65;
   }
+
+  .drawer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
