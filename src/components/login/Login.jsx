@@ -27,6 +27,31 @@ const Login = () => {
       }
     );
   };
+
+  const triggerResetEmail = async () => {
+    await auth.sendPasswordResetEmail( email).then((result)=>{
+    
+      swal({
+        title: "GREAT",
+        text: "Reset Mail sent Sucessfully",
+        icon: "success",
+        timer: "1500",
+        button: false,
+      })
+    
+  }
+    
+      ,(error)=>{swal({
+        title: "Oops!",
+        text: error.message,
+        icon: "error",
+        timer: "1500",
+        button: false,
+      });}
+    );
+    console.log("Password reset email sent")
+  }
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
@@ -80,7 +105,7 @@ const Login = () => {
             <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
-          <a className="login-form-forgot" href="">
+          <a className="login-form-forgot" onClick={triggerResetEmail}>
             Forgot password
           </a>
         </Form.Item>
@@ -95,7 +120,7 @@ const Login = () => {
           >
             Log in
           </Button>
-          Or <a href="/#/registration">register now!</a>
+          Or <a onClick={()=>navigate("/registration")}>register now!</a>
         </Form.Item>
       </Form>
       </card>

@@ -121,7 +121,7 @@ const Signup = () => {
       >
         Sign up
       </Button>
-     
+      Or <a  onClick={()=>navigate("/")}>login now</a>
     </Form.Item>
   </Form>
   </card>

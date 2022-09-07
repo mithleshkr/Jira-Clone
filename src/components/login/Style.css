@@ -20,7 +20,7 @@
   top: 40%;
   left: 48%;
   transform: translate(-40%, -40%);
-  height: 50vh;
+  height: 42vh;
   
 
   /* display: flex;
@@ -62,7 +62,7 @@
 }
 .main-div {
   height: 100vh;
-   background-image:url(https://img-cdn.inc.com/image/upload/w_1920,h_1080,c_fill/images/panoramic/GettyImages-955899588_437277_jfqfvp.jpg); 
+   background-image:url(https://ingeniouspe.com/assets/img/pageheads/consult04.jpg); 
    background-repeat: no-repeat;
   background-size: cover;
   background-position: center; 

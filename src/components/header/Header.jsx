@@ -33,6 +33,7 @@ const Header = () => {
        </div>
        
        <div style={{display:"flex",width:"6%",alignItems:"center"}}>
+        
         <AccountCircle 
         
          onClick={handleClick}
@@ -48,7 +49,9 @@ const Header = () => {
         }}
       >
         <div className='logout-popover' >
-       <p onClick={()=>navigate('/')}>Log out <ExitToApp fontSize='small' /></p>
+       <p onClick={()=>navigate('/')}>
+        
+        Log out <ExitToApp fontSize='small' /></p>
        </div>
       </Popover>
        </div>
