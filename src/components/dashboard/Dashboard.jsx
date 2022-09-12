@@ -36,6 +36,7 @@ import { db } from "../../firebase";
 import swal from "sweetalert";
 
 var his = {};
+
 var currentTimestamp = Date.now();
 console.log(currentTimestamp); // get current timestamp
 var date = new Intl.DateTimeFormat("en-US", {
@@ -78,6 +79,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               AssignTo: assignTo,
               Status: status,
               Time: date,
+              
             });
             swal({
               title: "Great",
@@ -224,29 +226,36 @@ const Dashboard = () => {
     }
   }
   //*function to fetch history from collections
-  function FetchHistory() {
-    try {
-      db.collection("task-activity")
-        .get()
-        .then((snapshot) => {
-          if (snapshot.docs.length) {
-            snapshot.docs.forEach((doc) => {
-              setDisplayHistory((prev) => {
-                return [...prev, { data: doc.data(), id: doc.id }];
-              });
-            });
-          }
-        });
-    } catch (error) {
-      console.log("fetch error", error);
-    }
-  }
+  // function FetchHistory() {
+  //   try {
+  //     db.collection("task-activity")
+  //       .get()
+  //       .then((snapshot) => {
+  //         if (snapshot.docs.length) {
+  //           snapshot.docs.forEach((doc) => { 
+                
+  //             console.log("DOC==>",doc._delegate._document.data.value.mapValue.fields.ID.stringValue)    
+  //             console.log("ID==>",his.his_id)         
+  //             setDisplayHistory((prev) => {
+  //               console.log("PREv==>",prev)
+                
+  //               // console.log("ID",his.ID)
+                
+  //               return [...prev, { data: doc.data(), id: doc.id  }];
+  //             });
+  //         });
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log("fetch error", error);
+  //   }
+  // }
 
   //useEffect
   useEffect(() => {
     Fetchdata();
     updateData();
-    FetchHistory();
+    
   }, []);
 
   //   let color = getcolordetails.find((color) => _id === color._id);
@@ -270,7 +279,9 @@ const Dashboard = () => {
           }),
           setTimeout(() => {
             window.location.reload(false);
-          }, 1000)
+          }, 1000),
+          sessionStorage.setItem("Time", date),
+          sessionStorage.setItem("Status", e)
         )
         .finally();
     } catch (error) {
@@ -300,8 +311,48 @@ const Dashboard = () => {
   const toggleDrawer = (id) => {
     setIsOpen((prevState) => !prevState);
     let activity = displaydata.find((activity) => id === activity.id);
+    let his_id = activity;
     his = activity.data;
+    his={
+      ...his,
+      ...{his_id:his_id.id}
+    }
+    console.log("his",his)
+    console.log("details", his.Time)
     console.log("history", activity.data.TaskTitle);
+    console.log("id", activity.id);
+    
+      try {
+        db.collection("task-activity")
+          .get()
+          .then((snapshot) => {
+            if (snapshot.docs.length) {
+              snapshot.docs.forEach((doc) => { 
+                if(doc._delegate._document.data.value.mapValue.fields.ID.stringValue === his.his_id){
+                  console.log('test')
+                  setDisplayHistory((prev) => {
+                    console.log("prev",prev)
+                  
+                    return [...prev, { data: doc.data(), id: doc.id  }];
+                  });
+                }
+                  
+                // console.log("DOC==>",doc._delegate._document.data.value.mapValue.fields.ID.stringValue)    
+                // console.log("ID==>",his.his_id)         
+                // setDisplayHistory((prev) => {
+                  
+                  
+                //   // console.log("ID",his.ID)
+                  
+                //   return [...prev, { data: doc.data(), id: doc.id  }];
+                // });
+            });
+            }
+          });
+      } catch (error) {
+        console.log("fetch error", error);
+      }
+   
   };
 
   return (
@@ -311,6 +362,7 @@ const Dashboard = () => {
         <div style={{ display: "flex" }}>
           <Navbar />
         </div>
+        
 
         <div style={{ width: "80%" }}>
           {/* <card> */}
@@ -646,25 +698,40 @@ const Dashboard = () => {
                   {his.Time}
                 </p>{" "}
               </h4>
-              {/*{displayHistory
-              .sort((a,b)=>{
-                return 
+              <h4 style={{ fontWeight: 600, color: " #FFD700" }}>
+                {" "}
+                ToDo:
+                <p style={{ fontWeight: 200, color: " black" }}>
+                  {his.Time}
+                </p>{" "}
+              </h4>
+              <h4 style={{ fontWeight: 600, color: "#1890ff" }}>
+                      History of Task
+                    </h4>
+              {displayHistory
+              .map((t)=>{
+                return (
+                  <div>
+                    
+                    {t.data.Status}{t.data.Time}
+                  </div>
+                )
 
               })
-              .map((act)=>( ))}*/}
+            }
 
               <div>
                 <h4 style={{ fontWeight: 600, color: "#1890ff" }}>
                   Last Updated On:{" "}
                   <p style={{ fontWeight: 200, color: "black" }}>
-                    {his.UpdatedTime}
+                     {his.UpdatedTime} 
                   </p>
                 </h4>
 
                 <h4 style={{ fontWeight: 600, color: "#ff9318" }}>
-                  Status:{" "}
+                 Current Status:{" "}
                   <p style={{ fontWeight: 200, color: "black" }}>
-                    {his.Status}
+                     {his.Status} 
                   </p>
                 </h4>
                 {/* <h4 style={{ fontWeight: 600,color:"#18ff65" }}>
@@ -674,10 +741,7 @@ const Dashboard = () => {
             </div>
           </Drawer>
 
-          {/* <Dialog open={open} onClose={onClose}>
-            <DialogContent>Test</DialogContent>
-
-          </Dialog> */}
+          
           {/* </card> */}
         </div>
       </div>
