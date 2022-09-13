@@ -10,14 +10,11 @@ import Navbar from "../navbar/Navbar";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
-//loadsh
-//import _ from "lodash";
-
 //loader
 //import Loader from "../../loader/Loader";
 
 //material icons
-import { Add } from "@material-ui/icons";
+import { Add, DeleteOutline } from "@material-ui/icons";
 
 //material core
 import { Button, Avatar } from "@material-ui/core";
@@ -27,7 +24,17 @@ import "./Style.css";
 import "antd/dist/antd.css";
 
 //ant design
-import { Form, Modal, Select, Input, Card, Col, Row } from "antd";
+import {
+  Form,
+  Modal,
+  Select,
+  Input,
+  Card,
+  Col,
+  Row,
+  Popconfirm,
+  message,
+} from "antd";
 
 //firebase db
 import { db } from "../../firebase";
@@ -35,10 +42,11 @@ import { db } from "../../firebase";
 //sweetalert
 import swal from "sweetalert";
 
+//global variable for history of task
 var his = {};
 
+//get current timestamp
 var currentTimestamp = Date.now();
-console.log(currentTimestamp); // get current timestamp
 var date = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "2-digit",
@@ -79,15 +87,15 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
               AssignTo: assignTo,
               Status: status,
               Time: date,
-              
             });
-            swal({
-              title: "Great",
-              text: "Task Added Successfully",
-              icon: "success",
-              timer: "2000",
-              button: false,
-            });
+            message.success("Task Addes Successfully");
+            // swal({
+            //   title: "Great",
+            //   text: "Task Added Successfully",
+            //   icon: "success",
+            //   timer: "2000",
+            //   button: false,
+            // });
 
             setTimeout(() => {
               window.location.reload(false);
@@ -186,8 +194,8 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
             >
               <option>select status</option>
               <option value="To-Do">TO DO</option>
-              <option value="In-Progress">IN PROGRESS</option>
-              <option value="Done">DONE</option>
+              {/* <option value="In-Progress">IN PROGRESS</option>
+              <option value="Done">DONE</option> */}
             </select>
           </div>
         </Form.Item>
@@ -215,6 +223,10 @@ const Dashboard = () => {
         .then((snapshot) => {
           if (snapshot.docs.length) {
             snapshot.docs.forEach((doc) => {
+              console.log(
+                "fetch",
+                doc._delegate._document.data.value.mapValue.fields
+              );
               setDisplayData((prev) => {
                 return [...prev, { data: doc.data(), id: doc.id }];
               });
@@ -225,40 +237,12 @@ const Dashboard = () => {
       console.log("fetch error", error);
     }
   }
-  //*function to fetch history from collections
-  // function FetchHistory() {
-  //   try {
-  //     db.collection("task-activity")
-  //       .get()
-  //       .then((snapshot) => {
-  //         if (snapshot.docs.length) {
-  //           snapshot.docs.forEach((doc) => { 
-                
-  //             console.log("DOC==>",doc._delegate._document.data.value.mapValue.fields.ID.stringValue)    
-  //             console.log("ID==>",his.his_id)         
-  //             setDisplayHistory((prev) => {
-  //               console.log("PREv==>",prev)
-                
-  //               // console.log("ID",his.ID)
-                
-  //               return [...prev, { data: doc.data(), id: doc.id  }];
-  //             });
-  //         });
-  //         }
-  //       });
-  //   } catch (error) {
-  //     console.log("fetch error", error);
-  //   }
-  // }
 
   //useEffect
   useEffect(() => {
     Fetchdata();
     updateData();
-    
   }, []);
-
-  //   let color = getcolordetails.find((color) => _id === color._id);
 
   //*function to update collection data by id
   const updateData = async (id, e) => {
@@ -279,7 +263,7 @@ const Dashboard = () => {
           }),
           setTimeout(() => {
             window.location.reload(false);
-          }, 1000),
+          }, 1500),
           sessionStorage.setItem("Time", date),
           sessionStorage.setItem("Status", e)
         )
@@ -289,19 +273,19 @@ const Dashboard = () => {
     }
   };
 
-  //filter of TODO
+  //*filter of TODO
   const filterData = (data) => {
     return data.data.Status === "To-Do";
   };
   var filterDataToDo = displaydata.filter(filterData);
 
-  //filter of IN-PROGRESS
+  //*filter of IN-PROGRESS
   const filterInProgress = (data) => {
     return data.data.Status === "In-Progress";
   };
   var filterDataInProgress = displaydata.filter(filterInProgress);
 
-  //filter of DONE
+  //*filter of DONE
   const filterDone = (data) => {
     return data.data.Status === "Done";
   };
@@ -313,46 +297,44 @@ const Dashboard = () => {
     let activity = displaydata.find((activity) => id === activity.id);
     let his_id = activity;
     his = activity.data;
-    his={
+    his = {
       ...his,
-      ...{his_id:his_id.id}
-    }
-    console.log("his",his)
-    console.log("details", his.Time)
-    console.log("history", activity.data.TaskTitle);
-    console.log("id", activity.id);
-    
-      try {
-        db.collection("task-activity")
-          .get()
-          .then((snapshot) => {
-            if (snapshot.docs.length) {
-              snapshot.docs.forEach((doc) => { 
-                if(doc._delegate._document.data.value.mapValue.fields.ID.stringValue === his.his_id){
-                  console.log('test')
-                  setDisplayHistory((prev) => {
-                    console.log("prev",prev)
-                  
-                    return [...prev, { data: doc.data(), id: doc.id  }];
-                  });
-                }
-                  
-                // console.log("DOC==>",doc._delegate._document.data.value.mapValue.fields.ID.stringValue)    
-                // console.log("ID==>",his.his_id)         
-                // setDisplayHistory((prev) => {
-                  
-                  
-                //   // console.log("ID",his.ID)
-                  
-                //   return [...prev, { data: doc.data(), id: doc.id  }];
-                // });
+      ...{ his_id: his_id.id },
+    };
+
+    //*to map the history of task according to ID
+    try {
+      db.collection("task-activity")
+        .get()
+        .then((snapshot) => {
+          if (snapshot.docs.length) {
+            snapshot.docs.forEach((doc) => {
+              if (
+                doc._delegate._document.data.value.mapValue.fields.ID
+                  .stringValue === his.his_id
+              ) {
+                setDisplayHistory((prev) => {
+                  return [...prev, { data: doc.data(), id: doc.id }];
+                });
+              }
             });
-            }
-          });
-      } catch (error) {
-        console.log("fetch error", error);
-      }
-   
+          }
+        });
+    } catch (error) {
+      console.log("fetch error", error);
+    }
+  };
+
+  const confirm = (id) => {
+    db.collection("task-details").doc(id).delete();
+    message.success("Deleted");
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
+  };
+
+  const cancel = (e) => {
+    message.error("Canceled");
   };
 
   return (
@@ -362,10 +344,8 @@ const Dashboard = () => {
         <div style={{ display: "flex" }}>
           <Navbar />
         </div>
-        
 
         <div style={{ width: "80%" }}>
-          {/* <card> */}
           <div
             style={{
               display: "flex",
@@ -426,7 +406,6 @@ const Dashboard = () => {
                                 cursor: "pointer",
                               }}
                               onClick={() => toggleDrawer(task.id)}
-                              // onClick={()=>showDrawer(task.id)}
                             >
                               ...
                             </p>
@@ -466,6 +445,18 @@ const Dashboard = () => {
                             <h5 style={{ fontWeight: 600 }}>
                               {task.data.EndDate}
                             </h5>
+                            <Popconfirm
+                              title="Are you sure to delete this task?"
+                              onConfirm={() => confirm(task.id)}
+                              onCancel={cancel}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <DeleteOutline
+                                fontSize="small"
+                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                              />
+                            </Popconfirm>
                             <h5>
                               <select
                                 style={{
@@ -487,9 +478,6 @@ const Dashboard = () => {
                       ))}
                   </div>
                 </Card>
-                {/* <Drawer placement="right" open={open}>
-                              <h1>hhh</h1>
-                              </Drawer> */}
               </Col>
 
               <Col span={8}>
@@ -523,7 +511,6 @@ const Dashboard = () => {
                                 cursor: "pointer",
                               }}
                               onClick={() => toggleDrawer(task.id)}
-                              // onClick={()=>showDrawer(task.id)}
                             >
                               ...
                             </p>
@@ -562,6 +549,18 @@ const Dashboard = () => {
                             <h5 style={{ fontWeight: 600 }}>
                               {task.data.EndDate}
                             </h5>
+                            <Popconfirm
+                              title="Are you sure to delete this task?"
+                              onConfirm={() => confirm(task.id)}
+                              onCancel={cancel}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <DeleteOutline
+                                fontSize="small"
+                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                              />
+                            </Popconfirm>
                             <h5>
                               <select
                                 style={{
@@ -616,7 +615,6 @@ const Dashboard = () => {
                                 cursor: "pointer",
                               }}
                               onClick={() => toggleDrawer(task.id)}
-                              // onClick={()=>showDrawer(task.id)}
                             >
                               ...
                             </p>
@@ -655,6 +653,18 @@ const Dashboard = () => {
                             <h5 style={{ fontWeight: 600 }}>
                               {task.data.EndDate}
                             </h5>
+                            <Popconfirm
+                              title="Are you sure to delete this task?"
+                              onConfirm={() => confirm(task.id)}
+                              onCancel={cancel}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <DeleteOutline
+                                fontSize="small"
+                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                              />
+                            </Popconfirm>
                             <h5>
                               <select
                                 style={{
@@ -681,7 +691,7 @@ const Dashboard = () => {
             open={isOpen}
             onClose={toggleDrawer}
             direction="right"
-            style={{ width: "460px" }}
+            style={{ width: "460px", overflow: "auto" }}
           >
             <div className="drawer">
               <h4> Activitie Details</h4>
@@ -691,58 +701,54 @@ const Dashboard = () => {
                 <h4 style={{ color: "#1890ff" }}>{his.AssignTo}</h4>
               </div>
 
-              <h4 style={{ fontWeight: 600, color: " #FFD700" }}>
+              <h4 style={{ fontWeight: 600, color: " black" }}>
                 {" "}
                 Created On:
                 <p style={{ fontWeight: 200, color: " black" }}>
                   {his.Time}
                 </p>{" "}
               </h4>
-              <h4 style={{ fontWeight: 600, color: " #FFD700" }}>
+              <h4 style={{ fontWeight: 600, color: " black" }}>
                 {" "}
                 ToDo:
                 <p style={{ fontWeight: 200, color: " black" }}>
                   {his.Time}
                 </p>{" "}
               </h4>
-              <h4 style={{ fontWeight: 600, color: "#1890ff" }}>
-                      History of Task
-                    </h4>
-              {displayHistory
-              .map((t)=>{
-                return (
-                  <div>
-                    
-                    {t.data.Status}{t.data.Time}
-                  </div>
-                )
 
-              })
-            }
+              {/* mapping of history */}
+              <h4 style={{ fontWeight: 600, color: "black" }}>
+                History of Task
+              </h4>
+              {displayHistory
+                .sort((a, b) => {
+                  return new Date(b.data.Time) - new Date(a.data.Time);
+                })
+                .map((taskHistory) => {
+                  return (
+                    <div>
+                      {taskHistory.data.Status} : {taskHistory.data.Time}
+                    </div>
+                  );
+                })}
 
               <div>
-                <h4 style={{ fontWeight: 600, color: "#1890ff" }}>
+                <h4 style={{ fontWeight: 600, color: "black" }}>
                   Last Updated On:{" "}
                   <p style={{ fontWeight: 200, color: "black" }}>
-                     {his.UpdatedTime} 
+                    {his.UpdatedTime}
                   </p>
                 </h4>
 
-                <h4 style={{ fontWeight: 600, color: "#ff9318" }}>
-                 Current Status:{" "}
+                <h4 style={{ fontWeight: 600, color: "black" }}>
+                  Current Status:{" "}
                   <p style={{ fontWeight: 200, color: "black" }}>
-                     {his.Status} 
+                    {his.Status}
                   </p>
                 </h4>
-                {/* <h4 style={{ fontWeight: 600,color:"#18ff65" }}>
-                  Done: <p style={{ fontWeight: 200,color:"black" }}>{his.Time}</p>
-                </h4> */}
               </div>
             </div>
           </Drawer>
-
-          
-          {/* </card> */}
         </div>
       </div>
     </div>

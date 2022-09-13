@@ -70,6 +70,7 @@ const Signup = () => {
       ]}
     >
       <Input
+        autoComplete="off"
         prefix={<UserOutlined className="site-form-item-icon" />}
         placeholder="Name"
         value={name}
@@ -77,11 +78,11 @@ const Signup = () => {
       />
     </Form.Item>
     <Form.Item
-      name="username"
+      name="email"
       rules={[
         {
           required: true,
-          message: "Please input your Username!",
+          message: "Please input your Email!",
         },
       ]}
     >

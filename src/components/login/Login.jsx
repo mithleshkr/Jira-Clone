@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import "./Style.css";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, message } from "antd";
 import { auth } from "../../firebase";
  import { useNavigate } from "react-router-dom";
  import swal from "sweetalert";
@@ -15,39 +15,45 @@ const Login = () => {
   const handleLogin = () => {
     auth.signInWithEmailAndPassword(email, password).then(
       (result) =>
+      
         navigate("/dashboard") + sessionStorage.setItem("email", email),
       (error) => {
-        swal({
-          title: "Oops!",
-          text: error.message,
-          icon: "error",
-          timer: "1500",
-          button: false,
-        });
+        message.error(error.message)
+        // swal({
+        //   title: "Oops!",
+        //   text: error.message,
+        //   icon: "error",
+        //   timer: "1500",
+        //   button: false,
+        // });
       }
     );
   };
 
   const triggerResetEmail = async () => {
     await auth.sendPasswordResetEmail( email).then((result)=>{
+      message.success("Reset Mail sent Sucessfully")
     
-      swal({
-        title: "GREAT",
-        text: "Reset Mail sent Sucessfully",
-        icon: "success",
-        timer: "1500",
-        button: false,
-      })
+      // swal({
+      //   title: "GREAT",
+      //   text: "Reset Mail sent Sucessfully",
+      //   icon: "success",
+      //   timer: "1500",
+      //   button: false,
+      // })
     
   }
     
-      ,(error)=>{swal({
-        title: "Oops!",
-        text: error.message,
-        icon: "error",
-        timer: "1500",
-        button: false,
-      });}
+      ,(error)=>{
+        message.error(error.message)
+      //   swal({
+      //   title: "Oops!",
+      //   text: error.message,
+      //   icon: "error",
+      //   timer: "1500",
+      //   button: false,
+      // });
+    }
     );
     console.log("Password reset email sent")
   }
@@ -77,6 +83,7 @@ const Login = () => {
           ]}
         >
           <Input
+            autoComplete="off"
             prefix={<UserOutlined className="site-form-item-icon" />}
             placeholder="Username"
             value={email}

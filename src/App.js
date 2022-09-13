@@ -13,6 +13,7 @@ import Signup from './components/registration/Signup'
 const App = () => {
   return (
     <div>
+      
       <HashRouter>
         <Routes>
           <Route path='/' exact element={<Login />} />
