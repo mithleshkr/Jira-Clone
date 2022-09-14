@@ -105,3 +105,28 @@
     justify-content: space-between;
 
   }
+
+  .history-task{
+    padding: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.493);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    
+  }
+
+  .history-details{
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px 0;
+    width: 100%;
+  
+  }
+  .history-title{
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+    
+  }
