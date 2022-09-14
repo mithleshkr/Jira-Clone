@@ -454,7 +454,7 @@ const Dashboard = () => {
                             >
                               <DeleteOutline
                                 fontSize="small"
-                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                                style={{ color: "#d11a2a", cursor: "pointer" }}
                               />
                             </Popconfirm>
                             <h5>
@@ -558,7 +558,7 @@ const Dashboard = () => {
                             >
                               <DeleteOutline
                                 fontSize="small"
-                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                                style={{ color: "#d11a2a", cursor: "pointer" }}
                               />
                             </Popconfirm>
                             <h5>
@@ -662,7 +662,7 @@ const Dashboard = () => {
                             >
                               <DeleteOutline
                                 fontSize="small"
-                                style={{ color: "#d11a2a",cursor:"pointer" }}
+                                style={{ color: "#d11a2a", cursor: "pointer" }}
                               />
                             </Popconfirm>
                             <h5>
@@ -724,13 +724,28 @@ const Dashboard = () => {
                 .sort((a, b) => {
                   return new Date(b.data.Time) - new Date(a.data.Time);
                 })
-                .map((taskHistory) => {
-                  return (
+                .map((taskHistory) => (
+                  <div>
+                    <div className="history-task">
+                    <div className="history-title">
                     <div>
-                      {taskHistory.data.Status} : {taskHistory.data.Time}
+                      Status
                     </div>
-                  );
-                })}
+                    <div>
+                      Date & Time
+                    </div>
+                    </div>
+                      <div className="history-details">
+
+                        
+                        <div>{taskHistory.data.Status} </div>
+                        <div>{taskHistory.data.Time}</div>
+                      </div>
+                    </div>
+
+                    {/* {taskHistory.data.Status} : {taskHistory.data.Time} */}
+                  </div>
+                ))}
 
               <div>
                 <h4 style={{ fontWeight: 600, color: "black" }}>
