@@ -127,7 +127,8 @@ const Login = () => {
           >
             Log in
           </Button>
-          Or <a onClick={()=>navigate("/registration")}>register now!</a>
+          <div></div>
+          Or <a onClick={()=>navigate("/registration")} style={{fontWeight:"600"}}>Register now!</a>
         </Form.Item>
       </Form>
       </card>

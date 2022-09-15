@@ -34,13 +34,16 @@ import {
   Row,
   Popconfirm,
   message,
+  Timeline,
 } from "antd";
+
+import { ClockCircleOutlined } from "@ant-design/icons";
 
 //firebase db
 import { db } from "../../firebase";
 
 //sweetalert
-import swal from "sweetalert";
+// import swal from "sweetalert";
 
 //global variable for history of task
 var his = {};
@@ -702,66 +705,72 @@ const Dashboard = () => {
               </div>
 
               <h4 style={{ fontWeight: 600, color: " black" }}>
-                {" "}
                 Created On:
-                <p style={{ fontWeight: 200, color: " black" }}>
+                <Timeline>
+                  <Timeline.Item style={{ fontWeight: 200, color: " black" }}>
+                    {his.Time}
+                  </Timeline.Item>
+                </Timeline>
+                {/* <p style={{ fontWeight: 200, color: " black" }}>
                   {his.Time}
-                </p>{" "}
-              </h4>
-              <h4 style={{ fontWeight: 600, color: " black" }}>
-                {" "}
-                ToDo:
-                <p style={{ fontWeight: 200, color: " black" }}>
-                  {his.Time}
-                </p>{" "}
+                </p>{" "} */}
               </h4>
 
               {/* mapping of history */}
               <h4 style={{ fontWeight: 600, color: "black" }}>
                 History of Task
               </h4>
+              <Timeline >
+              <Timeline.Item>
+              <card className="timeline">
+              <h4>To Do</h4>
+              <p>{his.Time}</p></card>
+              
+              </Timeline.Item>
+              
+              
+              <Timeline>
               {displayHistory
                 .sort((a, b) => {
-                  return new Date(b.data.Time) - new Date(a.data.Time);
+                  return new Date(a.data.Time) - new Date(b.data.Time);
                 })
                 .map((taskHistory) => (
-                  <div>
-                    <div className="history-task">
-                    <div className="history-title">
-                    <div>
-                      Status
-                    </div>
-                    <div>
-                      Date & Time
-                    </div>
-                    </div>
-                      <div className="history-details">
-
-                        
-                        <div>{taskHistory.data.Status} </div>
-                        <div>{taskHistory.data.Time}</div>
-                      </div>
-                    </div>
-
+                  <div >
+                      <h4 style={{ fontWeight: 600, color: " black" }}>
+                      </h4>
+                        <Timeline.Item>
+                        <card className="timeline">
+                        <h4>{taskHistory.data.Status}</h4>
+                       <p>{taskHistory.data.Time}</p>
+                        </card>
+                        </Timeline.Item>
                     {/* {taskHistory.data.Status} : {taskHistory.data.Time} */}
                   </div>
                 ))}
+                </Timeline>
+                </Timeline>
 
-              <div>
+              {/* <div>
                 <h4 style={{ fontWeight: 600, color: "black" }}>
                   Last Updated On:{" "}
-                  <p style={{ fontWeight: 200, color: "black" }}>
+
+                  <Timeline>
+                  <Timeline.Item style={{ fontWeight: 200, color: " black" }}>
                     {his.UpdatedTime}
-                  </p>
+                  </Timeline.Item>
+                </Timeline>
+                  
                 </h4>
 
                 <h4 style={{ fontWeight: 600, color: "black" }}>
                   Current Status:{" "}
-                  <p style={{ fontWeight: 200, color: "black" }}>
+                  <Timeline>
+                  <Timeline.Item style={{ fontWeight: 200, color: " black" }}>
                     {his.Status}
-                  </p>
+                  </Timeline.Item>
+                </Timeline>
                 </h4>
-              </div>
+                </div> */}
             </div>
           </Drawer>
         </div>
