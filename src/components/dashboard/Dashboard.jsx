@@ -42,6 +42,7 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 //firebase db
 import { db } from "../../firebase";
 
+
 //sweetalert
 // import swal from "sweetalert";
 
@@ -721,10 +722,14 @@ const Dashboard = () => {
                 History of Task
               </h4>
               <Timeline >
-              <Timeline.Item>
-              <card className="timeline">
+              <Timeline.Item >
+              <card className="history-activity" >
+              <div className="history-details" >
               <h4>To Do</h4>
-              <p>{his.Time}</p></card>
+              <p style={{ fontWeight: 300, fontSize:"12px" }}><ClockCircleOutlined /> {' '}{his.Time}</p>
+              </div>
+              </card>
+              
               
               </Timeline.Item>
               
@@ -739,9 +744,11 @@ const Dashboard = () => {
                       <h4 style={{ fontWeight: 600, color: " black" }}>
                       </h4>
                         <Timeline.Item>
-                        <card className="timeline">
+                        <card className="history-activity" >
+                        <div className="history-details" >
                         <h4>{taskHistory.data.Status}</h4>
-                       <p>{taskHistory.data.Time}</p>
+                       <p style={{ fontWeight: 300, fontSize:"12px" }}><ClockCircleOutlined /> {' '}{taskHistory.data.Time}</p>
+                       </div>
                         </card>
                         </Timeline.Item>
                     {/* {taskHistory.data.Status} : {taskHistory.data.Time} */}

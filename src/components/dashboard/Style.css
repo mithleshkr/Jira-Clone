@@ -106,7 +106,7 @@
 
   }
 
-  .history-task{
+  /* .history-task{
     padding: 5px;
     border: 1px solid rgba(128, 128, 128, 0.493);
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
@@ -129,7 +129,7 @@
     align-items:center;
     justify-content: space-between;
     
-  }
+  } */
 
   /* .history-card{
     background-color: red;
@@ -137,11 +137,11 @@
     
   } */
 
-  .history-main-div{
+  /* .history-main-div{
    
     padding: 3px;
     overflow: auto;
-  }
+  } */
   ul.timeline {
     list-style-type: none;
     position: relative;
@@ -171,4 +171,27 @@ ul.timeline > li:before {
     width: 20px;
     height: 20px;
     z-index: 400;
+}
+
+/* .history-activity::before{
+  position: absolute;
+  content: "";
+  height: 25px;
+  width: 15px;
+  background: #22c0e8;
+  top: 2px;
+  z-index: -1;
+  transform: rotate(45deg);
+  border: 1px solid grey;
+   
+   
+} */
+.history-details{
+  background-color: white;
+  height: 10vh;
+  width: 30vw;
+  padding: 5px;
+  border: 1px solid grey;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+  
 }
