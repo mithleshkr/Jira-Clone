@@ -42,7 +42,6 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 //firebase db
 import { db } from "../../firebase";
 
-
 //sweetalert
 // import swal from "sweetalert";
 
@@ -250,8 +249,10 @@ const Dashboard = () => {
 
   //*function to update collection data by id
   const updateData = async (id, e) => {
+    
     console.log(e);
     try {
+     
       await db
         .collection("task-details")
         .doc(id)
@@ -352,23 +353,42 @@ const Dashboard = () => {
         <div style={{ width: "80%" }}>
           <div
             style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
-              marginTop: "5px",
+              position: "absolute",
+              bottom: "30px",
+              right: "40px",
+              zIndex: 2,
             }}
+            // style={{
+            //   display: "flex",
+            //   alignItems: "flex-end",
+            //   justifyContent: "flex-end",
+            //   marginTop: "5px",
+            //   marginBottom:"5px"
+            // }}
           >
-            <Button
-              style={{ backgroundColor: "#1890ff", color: "white" }}
+            <button
+              style={{
+                backgroundColor: "#1890ff",
+                color: "white",
+                borderRadius: "100%",
+                padding: "6px",
+                width: "50px ",
+                height: "50px",
+                border: "1px solid #1890ff",
+                cursor:"pointer",
+                
+              }}
+              title="Add Task"
+              tooltip="Add Task"
               variant="contained"
               onClick={() => {
                 setVisible(true);
               }}
             >
-              <Add />
-              Add Task
-            </Button>
+              <Add style={{ fontSize:"33px"}} />
+            </button>
           </div>
+              <br/>
           <CollectionCreateForm
             visible={visible}
             onCreate={onCreate}
@@ -381,18 +401,23 @@ const Dashboard = () => {
             <Row gutter={15}>
               <Col span={8}>
                 {/* fetching data of TO DO Status */}
-                <Card title="TO DO" bordered={false}>
+                <Card
+                  title="TO DO"
+                  bordered={false}
+                  style={{ backgroundColor: "rgb(248,248,248)" }}
+                >
                   <div style={{ height: "67vh", overflow: "auto" }}>
                     {filterDataToDo
                       .sort((a, b) => {
                         return new Date(b.data.Time) - new Date(a.data.Time);
                       })
                       .map((task, id) => (
-                        <div className="todo-div" key={task.id}>
+                        <div className="todo-div" key={task.id} >
                           <div
                             style={{
                               display: "flex",
-                              justifyContent: "space-between",
+                              justifyContent:"space-between"
+                              
                             }}
                           >
                             <p
@@ -404,17 +429,32 @@ const Dashboard = () => {
                             >
                               {task.data.TaskTitle}
                             </p>
-                            <p
-                              style={{
-                                fontWeight: 500,
-                                cursor: "pointer",
-                              }}
-                              onClick={() => toggleDrawer(task.id)}
+                            <div style={{display:"flex"}}>
+                            <Popconfirm
+                              title="Are you sure to delete this task?"
+                              onConfirm={() => confirm(task.id)}
+                              onCancel={cancel}
+                              okText="Yes"
+                              cancelText="No"
                             >
-                              ...
-                            </p>
+                              <DeleteOutline
+                                fontSize="small"
+                                style={{ color: "#d11a2a", cursor: "pointer",marginRight:"8px" }}
+                              />
+                            </Popconfirm> {' '}
+                            <p 
+                            onClick={() => toggleDrawer(task.id)}
+                            style={{
+                              fontWeight: 900,
+                              fontSize: "15px",
+                              cursor:"pointer"
+                              
+                            }}>⋮</p>
+                            </div>
+                            </div>
+                            
 
-                            <Avatar
+                            {/* <Avatar
                               style={{
                                 width: 30,
                                 height: 30,
@@ -423,8 +463,8 @@ const Dashboard = () => {
                             >
                               {" "}
                               {task.data.AssignTo[0]}
-                            </Avatar>
-                          </div>
+                            </Avatar> */}
+                         
 
                           <div>
                             <p
@@ -432,10 +472,18 @@ const Dashboard = () => {
                                 fontWeight: 300,
                                 fontSize: "14px",
                                 color: "grey",
+                                marginBottom:0,
+                                marginTop:"-10px"
                               }}
                             >
                               {task.data.TaskDescreption}
                             </p>
+                            <p style={{ fontWeight: 600,marginBottom:"15px" }}>
+                              {task.data.EndDate}
+                            </p>
+                          </div>
+                          <div >
+                          
                           </div>
 
                           <div
@@ -446,10 +494,18 @@ const Dashboard = () => {
                               marginBottom: 0,
                             }}
                           >
-                            <h5 style={{ fontWeight: 600 }}>
-                              {task.data.EndDate}
-                            </h5>
-                            <Popconfirm
+                          <Avatar
+                              style={{
+                                width: 30,
+                                height: 30,
+                                background: "#1890ff",
+                              }}
+                            >
+                              {" "}
+                              {task.data.AssignTo[0]}
+                            </Avatar>
+                            
+                           {/*  <Popconfirm
                               title="Are you sure to delete this task?"
                               onConfirm={() => confirm(task.id)}
                               onCancel={cancel}
@@ -460,12 +516,14 @@ const Dashboard = () => {
                                 fontSize="small"
                                 style={{ color: "#d11a2a", cursor: "pointer" }}
                               />
-                            </Popconfirm>
+                          </Popconfirm> */}
                             <h5>
                               <select
                                 style={{
-                                  border: "1px solid #1890ff",
+                                  border: "1px solid grey",
                                   cursor: "pointer",
+                                  borderRadius:4,
+                                  padding:"4px 6px"
                                 }}
                                 onChange={(e) =>
                                   updateData(task.id, e.target.value)
@@ -486,49 +544,57 @@ const Dashboard = () => {
 
               <Col span={8}>
                 {/* fetching data of IN PROGRESS Status */}
-                <Card title="IN PROGRESS" bordered={false}>
+                <Card
+                  title="IN PROGRESS"
+                  bordered={false}
+                  style={{ backgroundColor: "rgb(248,248,248)" }}
+                >
                   <div style={{ height: "67vh", overflow: "auto" }}>
                     {filterDataInProgress
                       .sort((a, b) => {
                         return new Date(b.data.Time) - new Date(a.data.Time);
                       })
                       .map((task) => (
-                        <div className="todo-div1" key={task.id}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <p
-                              style={{
-                                fontWeight: 700,
-                                fontSize: "16px",
-                                marginBottom: 0,
-                              }}
-                            >
-                              {task.data.TaskTitle}
-                            </p>
-                            <p
-                              style={{
-                                fontWeight: 500,
-                                cursor: "pointer",
-                              }}
-                              onClick={() => toggleDrawer(task.id)}
-                            >
-                              ...
-                            </p>
-                            <Avatar
-                              style={{
-                                width: 30,
-                                height: 30,
-                                background: "#ff9318",
-                              }}
-                            >
-                              {" "}
-                              {task.data.AssignTo[0]}
-                            </Avatar>
-                          </div>
+                        <div className="todo-div1" key={task.id}  >
+                        <div
+                        style={{
+                          display: "flex",
+                          justifyContent:"space-between"
+                          
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontWeight: 700,
+                            fontSize: "16px",
+                            marginBottom: 0,
+                          }}
+                        >
+                          {task.data.TaskTitle}
+                        </p>
+                        <div style={{display:"flex"}}>
+                        <Popconfirm
+                          title="Are you sure to delete this task?"
+                          onConfirm={() => confirm(task.id)}
+                          onCancel={cancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <DeleteOutline
+                            fontSize="small"
+                            style={{ color: "#d11a2a", cursor: "pointer",marginRight:"8px" }}
+                          />
+                        </Popconfirm> {' '}
+                        <p 
+                        onClick={() => toggleDrawer(task.id)}
+                        style={{
+                          fontWeight: 900,
+                          fontSize: "15px",
+                          cursor:"pointer"
+                          
+                        }}>⋮</p>
+                        </div>
+                        </div>
 
                           <div>
                             <p
@@ -536,9 +602,14 @@ const Dashboard = () => {
                                 fontWeight: 300,
                                 fontSize: "14px",
                                 color: "grey",
+                                marginBottom:0,
+                                marginTop:"-10px"
                               }}
                             >
                               {task.data.TaskDescreption}
+                            </p>
+                            <p style={{ fontWeight: 600,marginBottom:"15px" }}>
+                              {task.data.EndDate}
                             </p>
                           </div>
 
@@ -550,26 +621,25 @@ const Dashboard = () => {
                               marginBottom: 0,
                             }}
                           >
-                            <h5 style={{ fontWeight: 600 }}>
-                              {task.data.EndDate}
-                            </h5>
-                            <Popconfirm
-                              title="Are you sure to delete this task?"
-                              onConfirm={() => confirm(task.id)}
-                              onCancel={cancel}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <DeleteOutline
-                                fontSize="small"
-                                style={{ color: "#d11a2a", cursor: "pointer" }}
-                              />
-                            </Popconfirm>
+                          <Avatar
+                          style={{
+                            width: 30,
+                            height: 30,
+                            background: "#ff9318",
+                          }}
+                        >
+                          {" "}
+                          {task.data.AssignTo[0]}
+                        </Avatar>
+                           
+                           
                             <h5>
                               <select
                                 style={{
-                                  border: "1px solid #ff9318",
+                                  border: "1px solid grey",
                                   cursor: "pointer",
+                                  borderRadius:4,
+                                  padding:"4px 6px"
                                 }}
                                 onChange={(e) =>
                                   updateData(task.id, e.target.value)
@@ -590,49 +660,57 @@ const Dashboard = () => {
               </Col>
               <Col span={8}>
                 {/* fetching data of DONE Status */}
-                <Card title="DONE" bordered={false}>
+                <Card
+                  title="DONE"
+                  bordered={false}
+                  style={{ backgroundColor: "rgb(248,248,248)" }}
+                >
                   <div style={{ height: "67vh", overflow: "auto" }}>
                     {filterDataDone
                       .sort((a, b) => {
                         return new Date(b.data.Time) - new Date(a.data.Time);
                       })
                       .map((task) => (
-                        <div className="todo-div2" key={task.id}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <p
-                              style={{
-                                fontWeight: 700,
-                                fontSize: "16px",
-                                marginBottom: 0,
-                              }}
-                            >
-                              {task.data.TaskTitle}
-                            </p>
-                            <p
-                              style={{
-                                fontWeight: 500,
-                                cursor: "pointer",
-                              }}
-                              onClick={() => toggleDrawer(task.id)}
-                            >
-                              ...
-                            </p>
-                            <Avatar
-                              style={{
-                                width: 30,
-                                height: 30,
-                                background: "#18ff65",
-                              }}
-                            >
-                              {" "}
-                              {task.data.AssignTo[0]}
-                            </Avatar>
-                          </div>
+                        <div className="todo-div2" key={task.id} >
+                        <div
+                        style={{
+                          display: "flex",
+                          justifyContent:"space-between"
+                          
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontWeight: 700,
+                            fontSize: "16px",
+                            marginBottom: 0,
+                          }}
+                        >
+                          {task.data.TaskTitle}
+                        </p>
+                        <div style={{display:"flex"}}>
+                        <Popconfirm
+                          title="Are you sure to delete this task?"
+                          onConfirm={() => confirm(task.id)}
+                          onCancel={cancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <DeleteOutline
+                            fontSize="small"
+                            style={{ color: "#d11a2a", cursor: "pointer",marginRight:"8px" }}
+                          />
+                        </Popconfirm> {' '}
+                        <p 
+                        onClick={() => toggleDrawer(task.id)}
+                        style={{
+                          fontWeight: 900,
+                          fontSize: "15px",
+                          cursor:"pointer"
+                          
+                        }}>⋮</p>
+                        </div>
+                        </div>
 
                           <div>
                             <p
@@ -640,9 +718,14 @@ const Dashboard = () => {
                                 fontWeight: 300,
                                 fontSize: "14px",
                                 color: "grey",
+                                marginBottom:0,
+                                marginTop:"-10px"
                               }}
                             >
                               {task.data.TaskDescreption}
+                            </p>
+                            <p style={{ fontWeight: 600,marginBottom:"15px" }}>
+                              {task.data.EndDate}
                             </p>
                           </div>
 
@@ -654,27 +737,28 @@ const Dashboard = () => {
                               marginBottom: 0,
                             }}
                           >
-                            <h5 style={{ fontWeight: 600 }}>
-                              {task.data.EndDate}
-                            </h5>
-                            <Popconfirm
-                              title="Are you sure to delete this task?"
-                              onConfirm={() => confirm(task.id)}
-                              onCancel={cancel}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <DeleteOutline
-                                fontSize="small"
-                                style={{ color: "#d11a2a", cursor: "pointer" }}
-                              />
-                            </Popconfirm>
+                          <Avatar
+                          style={{
+                            width: 30,
+                            height: 30,
+                            background: "#18ff65",
+                          }}
+                        >
+                          {" "}
+                          {task.data.AssignTo[0]}
+                        </Avatar>
+                            
+                            
                             <h5>
                               <select
+                              
                                 style={{
-                                  border: "1px solid #18ff65",
+                                  border: "1px solid grey",
                                   cursor: "pointer",
+                                  borderRadius:4,
+                                  padding:"4px 6px"
                                 }}
+                                
                                 onChange={(e) =>
                                   updateData(task.id, e.target.value)
                                 }
@@ -721,41 +805,41 @@ const Dashboard = () => {
               <h4 style={{ fontWeight: 600, color: "black" }}>
                 History of Task
               </h4>
-              <Timeline >
-              <Timeline.Item >
-              <card className="history-activity" >
-              <div className="history-details" >
-              <h4>To Do</h4>
-              <p style={{ fontWeight: 300, fontSize:"12px" }}><ClockCircleOutlined /> {' '}{his.Time}</p>
-              </div>
-              </card>
-              
-              
-              </Timeline.Item>
-              
-              
               <Timeline>
-              {displayHistory
-                .sort((a, b) => {
-                  return new Date(a.data.Time) - new Date(b.data.Time);
-                })
-                .map((taskHistory) => (
-                  <div >
-                      <h4 style={{ fontWeight: 600, color: " black" }}>
-                      </h4>
+                <Timeline.Item>
+                  <card className="history-activity">
+                    <div className="history-details">
+                      <h4>To Do</h4>
+                      <p style={{ fontWeight: 300, fontSize: "12px" }}>
+                        <ClockCircleOutlined /> {his.Time}
+                      </p>
+                    </div>
+                  </card>
+                </Timeline.Item>
+
+                <Timeline>
+                  {displayHistory
+                    .sort((a, b) => {
+                      return new Date(a.data.Time) - new Date(b.data.Time);
+                    })
+                    .map((taskHistory) => (
+                      <div>
+                        <h4 style={{ fontWeight: 600, color: " black" }}></h4>
                         <Timeline.Item>
-                        <card className="history-activity" >
-                        <div className="history-details" >
-                        <h4>{taskHistory.data.Status}</h4>
-                       <p style={{ fontWeight: 300, fontSize:"12px" }}><ClockCircleOutlined /> {' '}{taskHistory.data.Time}</p>
-                       </div>
-                        </card>
+                          <card className="history-activity">
+                            <div className="history-details">
+                              <h4>{taskHistory.data.Status}</h4>
+                              <p style={{ fontWeight: 300, fontSize: "12px" }}>
+                                <ClockCircleOutlined /> {taskHistory.data.Time}
+                              </p>
+                            </div>
+                          </card>
                         </Timeline.Item>
-                    {/* {taskHistory.data.Status} : {taskHistory.data.Time} */}
-                  </div>
-                ))}
+                        {/* {taskHistory.data.Status} : {taskHistory.data.Time} */}
+                      </div>
+                    ))}
                 </Timeline>
-                </Timeline>
+              </Timeline>
 
               {/* <div>
                 <h4 style={{ fontWeight: 600, color: "black" }}>
